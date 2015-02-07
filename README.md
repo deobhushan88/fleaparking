@@ -14,5 +14,10 @@ Milestones, user stories for a sprint and bugs are tracked using the Github "iss
 
 Prior to beginning a sprint, we will plan and commit items to be completed in that sprint, using the milestones feature in Github.
 
+Since we have small teams working independently on each component, we can do with simple source control management without branching:
+* `git clone` to get started
+* Work on your code, commit locally and then `git pull` to resolve any conflicts
+* Finally, after resolving any conflicts `git push` to this github repository.
+
 
 
