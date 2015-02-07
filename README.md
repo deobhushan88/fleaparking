@@ -20,5 +20,6 @@ Since we have small teams working independently on each component, we can do wit
 * Then `git pull`! Resolve conflicts if any.
 * Finally, after resolving any conflicts `git push` to this github repository.
 
-
+**Sprints**<br/>
+*Sprint 1* (ends Feb 28) is a long one as we get set up. Following sprints will be shorter and we'll hope to gain more velocity.
 
