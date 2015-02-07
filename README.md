@@ -9,8 +9,8 @@ Milestones, user stories for a sprint and bugs are tracked using the Github "iss
 * Items related to the backend, are to be labelled as "backend"
 * Items related to 295b assignments are to be labelled as "295b"
 * Items related to training are to be labelled as "training"
-* Bugs will be labelled "bugs"
-* Enhancement suggestions will be labelled "enhancements"
+* Bugs will be labelled "bug"
+* Enhancement suggestions will be labelled "enhancement"
 
 Prior to beginning a sprint, we will plan and commit items to be completed in that sprint, using the milestones feature in Github.
 
