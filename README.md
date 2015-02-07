@@ -1,6 +1,6 @@
 # Flea Parking
 There are two parts to this repository:
-* Android App <br/>*Bhushan Deo & Amod Rege*
+* App <br/>*Bhushan Deo & Amod Rege*
 * Backend <br/>*Gaurav Bhardwaj & Prabhu Siddharth Raveendran*
 
 **Process**<br/>
