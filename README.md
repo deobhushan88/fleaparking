@@ -5,7 +5,6 @@ There are two parts to this repository:
 
 **Process**<br/>
 Milestones, user stories for a sprint and bugs are tracked using the Github "issues" interface.<br/>
-<br/>
 * Items related to the app, are to be labelled as "app"
 * Items related to the backend, are to be labelled as "backend"
 * Items related to 295b assignments are to be labelled as "295b"
