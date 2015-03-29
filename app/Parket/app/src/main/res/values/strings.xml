@@ -1,3 +1,18 @@
 <resources>
     <string name="app_name">Parket</string>
+
+    <!-- Parket Backend -->
+    <string name="backend_auth">https://parketb.com/auth</string>
+    <string name="backend_auth_callback">https://parketb.com/auth/callback</string>
+    <string name="backend_myparkingspaces">https://parketb.com/users/self/parkingspaces</string>
+    <string name="backend_search">https://parketb.com/search</string>
+    <string name="backend_mybookings">https://parketb.com/users/self/bookings</string>
+
+    <!-- LoginActivity -->
+    <string name="title_activity_login">Parket</string>
+    <string name="description_parket_logo">Parket Logo</string>
+    <string name="text_welcome">Welcome to Parket!</string>
+    <string name="text_about">Parket is a marketplace which helps you find parking where you need it.
+    If you have a parking space to rent, you can add it to our marketplace.</string>
+
 </resources>
