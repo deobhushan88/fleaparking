@@ -1,0 +1,26 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="edu.sjsu.cmpe295.parket.VerifyAddressButton">
+
+
+    <Button
+        android:layout_width="190dp"
+        android:layout_height="wrap_content"
+        android:text="Cancel"
+        android:id="@+id/cancelButton"
+        android:layout_gravity="left|bottom"
+        android:textSize="14dp"
+        android:clickable="true"
+        android:enabled="true" />
+
+    <Button
+        android:layout_width="190dp"
+        android:layout_height="wrap_content"
+        android:text="Verify"
+        android:id="@+id/verifyButton"
+        android:layout_gravity="right|bottom"
+        android:textSize="14dp"
+        android:clickable="true"
+        android:enabled="true" />
+</FrameLayout>
