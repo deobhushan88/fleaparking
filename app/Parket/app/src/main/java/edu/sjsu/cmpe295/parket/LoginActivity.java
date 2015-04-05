@@ -1,6 +1,11 @@
 package edu.sjsu.cmpe295.parket;
 
+import android.accounts.AccountManager;
 import android.app.Activity;
+import android.app.job.JobInfo;
+import android.app.job.JobScheduler;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.os.Bundle;
@@ -24,7 +29,6 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -36,6 +40,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import edu.sjsu.cmpe295.parket.util.AuthUtil;
+import edu.sjsu.cmpe295.parket.util.IdTokenService;
 
 public class LoginActivity extends Activity implements View.OnClickListener,
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
@@ -43,9 +49,6 @@ public class LoginActivity extends Activity implements View.OnClickListener,
 
     /* Request code used to invoke sign in user interactions. */
     private static final int RC_SIGN_IN = 0;
-
-    /* Server Client ID for OAuth */
-    private static final String SERVER_CLIENT_ID = "58041690509-vo5b18kt1563rk85vl74l2oujsc3n68i.apps.googleusercontent.com";
 
     /* A flag indicating that a PendingIntent is in progress and prevents
     * us from starting further intents.
@@ -67,22 +70,30 @@ public class LoginActivity extends Activity implements View.OnClickListener,
 
     private final String TAG = "LoginActivity";
 
+    private AuthUtil authUtil;
+    private ComponentName serviceComponent;
+    private static int jobId = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        authUtil = new AuthUtil(getApplicationContext());
+
         // Set up Google Sign in Client
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addApi(Plus.API)
                 .addScope(Plus.SCOPE_PLUS_LOGIN)
-                .requestServerAuthCode(SERVER_CLIENT_ID, this)
+                .requestServerAuthCode(authUtil.getServerClientId(), this)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
                 .build();
 
         btnSignIn = (SignInButton)findViewById(R.id.btn_googleSignIn);
         btnSignIn.setOnClickListener(this);
+
+        serviceComponent = new ComponentName(this, IdTokenService.class);
 
     }
 
@@ -113,6 +124,21 @@ public class LoginActivity extends Activity implements View.OnClickListener,
     public void onConnected(Bundle bundle) {
         mSignInClicked = false;
         Toast.makeText(this, "User is connected!", Toast.LENGTH_LONG).show();
+
+        // Starting the IdToken service.
+        // This will run periodically from here on, updating the idToken
+        JobInfo.Builder builder = new JobInfo.Builder(jobId++, serviceComponent)
+                .setPeriodic(authUtil.getTokenExpiryPeriod())
+                .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
+                .setPersisted(true);
+
+        JobScheduler jobScheduler =
+                (JobScheduler) getApplication().getSystemService(Context.JOB_SCHEDULER_SERVICE);
+        jobScheduler.schedule(builder.build());
+
+        // Move on to next activity
+        Intent i = new Intent(getApplicationContext(), AdvancedSearch.class);
+        startActivity(i);
     }
 
     @Override
@@ -205,6 +231,9 @@ public class LoginActivity extends Activity implements View.OnClickListener,
         HttpClient httpClient = new DefaultHttpClient();
         HttpPost httpPost = new HttpPost(getString(R.string.backend_auth_callback));
         try {
+            // Storing the initial idToken
+            authUtil.setIdToken(idToken);
+
             List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
             nameValuePairs.add(new BasicNameValuePair("idToken", idToken));
             nameValuePairs.add(new BasicNameValuePair("serverAuthCode", serverAuthCode));
@@ -216,7 +245,30 @@ public class LoginActivity extends Activity implements View.OnClickListener,
             Log.i(TAG, "Code: " + statusCode);
             Log.i(TAG, "Resp: " + responseBody);
 
-            return (statusCode == 200);
+            if (statusCode == 200) {
+                try {
+                    // Save the idToken expiry
+                    // NOTE: THIS IS NOT BEING USED ANYWHERE CURRENTLY, CONSIDER REMOVING
+                    JSONObject jo = new JSONObject(responseBody);
+                    authUtil.setIdTokenExpiry(jo.getString("expiry"));
+                    return true;
+                } catch (JSONException e) {
+                    Log.e(TAG, "Error parsing auth callback JSON response", e);
+                    return false;
+                }
+            }
+            else {
+                JSONObject jo = null;
+                try {
+                    jo = new JSONObject(responseBody);
+                    Log.e(TAG, "Server returned status code + " + statusCode + " and status "
+                            + jo.getString("status") +" - from auth callback");
+                    return false;
+                } catch (JSONException e) {
+                    Log.e(TAG, "Error parsing auth callback JSON response", e);
+                    return false;
+                }
+            }
         } catch (ClientProtocolException e) {
             Log.e(TAG, "Error in auth code exchange.", e);
             return false;
@@ -228,10 +280,18 @@ public class LoginActivity extends Activity implements View.OnClickListener,
 
     protected void onActivityResult(int requestCode, int responseCode, Intent intent) {
         if (requestCode == RC_SIGN_IN) {
+
+            if (responseCode == RESULT_OK) {
+                if (intent != null) {
+                    // Store the account that user selected
+                    String userEmail = intent.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
+                    authUtil.setUserEmail(userEmail);
+                }
+            }
+
             if (responseCode != RESULT_OK) {
                 mSignInClicked = false;
             }
-
             mIntentInProgress = false;
 
             if (!mGoogleApiClient.isConnecting()) {
