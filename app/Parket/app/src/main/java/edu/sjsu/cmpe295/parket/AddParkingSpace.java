@@ -1,5 +1,6 @@
 package edu.sjsu.cmpe295.parket;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -28,7 +29,7 @@ import android.widget.Toast;
 import java.io.ByteArrayOutputStream;
 
 
-public class AddParkingSpace extends ActionBarActivity {
+public class AddParkingSpace extends Activity {
 
     Spinner spinner, state;
     Button addPhotosButton;
@@ -51,8 +52,8 @@ public class AddParkingSpace extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_parking_space);
 
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(true);
+        /*ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);*/
 
          spinner = (Spinner) findViewById(R.id.state);
         // Create an ArrayAdapter using the string array and a default spinner layout

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/markerInfoTitle"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:background="@color/accent"
+        android:autoText="false"
+        android:textSize="14sp"
+        android:padding="5dp"
+        android:hint="hello there"
+        android:textColor="#FFFFFF"
+    />
+    <TextView
+        android:id="@+id/markerInfoTime"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:background="@color/accent"
+        android:autoText="false"
+        android:textSize="14sp"
+        android:hint="hello there"
+        android:padding="5dp"
+        android:textColor="#FFFFFF"
+        android:layout_below="@+id/markerInfoTitle"
+         />
+    <TextView
+        android:id="@+id/markerInfoRate"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:background="@color/accent"
+        android:autoText="false"
+        android:textSize="14sp"
+        android:hint="hello there"
+        android:padding="5dp"
+        android:textColor="#FFFFFF"
+        android:layout_below="@+id/markerInfoTime"
+        />
+
+</RelativeLayout>

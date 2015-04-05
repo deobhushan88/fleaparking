@@ -1,5 +1,6 @@
 package edu.sjsu.cmpe295.parket;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Context;
@@ -32,7 +33,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import java.util.List;
 
 
-public class ConfirmAddress extends ActionBarActivity implements OnMapReadyCallback{
+public class ConfirmAddress extends Activity implements OnMapReadyCallback{
 
 
    String address;
@@ -47,8 +48,8 @@ public class ConfirmAddress extends ActionBarActivity implements OnMapReadyCallb
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_confirm_address);
 
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(true);
+       /* ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);*/
 
       Bundle bundle = getIntent().getExtras();
         Geocoder coder = new Geocoder(this);

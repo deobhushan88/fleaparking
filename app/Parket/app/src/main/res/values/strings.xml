@@ -8,6 +8,9 @@
     <string name="backend_search">https://parketb.com/search</string>
     <string name="backend_mybookings">https://parketb.com/users/self/bookings</string>
 
+    <!-- ShowParkingSpaceAroundMe -->
+    <string name="title_activity_show_parking_space_around_me">Parket</string>
+
     <!-- LoginActivity -->
     <string name="title_activity_login">Parket</string>
     <string name="description_parket_logo">Parket Logo</string>
@@ -82,5 +85,14 @@
 
     <!-- AdvancedSearchMap -->
     <string name="title_activity_advanced_search_map">AdvancedSearchMap</string>
+    <string name="title_activity_parking_space_details">ParkingSpaceDetails</string>
+
+    <!-- ParkingSpaceDetails -->
+    <string name="title_activity_parking_space_details_custom_adapter">
+        ParkingSpaceDetailsCustomAdapter
+    </string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
 
 </resources>
