@@ -1,7 +1,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:myapp="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="edu.sjsu.cmpe295.parket.ShowParkingSpaceAroundMe">
+    tools:context="edu.sjsu.cmpe295.parket.ShowParkingSpacesAroundMe">
     <item
         android:id="@+id/action_search"
         android:title="Search"

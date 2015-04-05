@@ -28,6 +28,7 @@ import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
+import android.widget.Toolbar;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.util.EntityUtils;
@@ -59,6 +60,8 @@ import org.apache.http.message.BasicNameValuePair;
 
 
 import javax.net.ssl.HttpsURLConnection;
+
+import edu.sjsu.cmpe295.parket.util.AuthUtil;
 
 import static edu.sjsu.cmpe295.parket.R.layout.activity_advanced_search;
 
@@ -94,8 +97,6 @@ public class AdvancedSearch extends Activity implements View.OnClickListener {
 
         /*ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);*/
-
-
 
         date = (EditText) findViewById(R.id.date);
         calendar = Calendar.getInstance();

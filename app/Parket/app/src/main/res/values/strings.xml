@@ -8,7 +8,7 @@
     <string name="backend_search">https://parketb.com/search</string>
     <string name="backend_mybookings">https://parketb.com/users/self/bookings</string>
 
-    <!-- ShowParkingSpaceAroundMe -->
+    <!-- ShowParkingSpacesAroundMe -->
     <string name="title_activity_show_parking_space_around_me">Parket</string>
 
     <!-- LoginActivity -->

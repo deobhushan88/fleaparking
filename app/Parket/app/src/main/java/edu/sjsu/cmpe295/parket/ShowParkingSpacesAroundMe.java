@@ -7,7 +7,7 @@ import android.view.MenuItem;
 import android.widget.Toolbar;
 
 
-public class ShowParkingSpaceAroundMe extends Activity {
+public class ShowParkingSpacesAroundMe extends Activity {
 
 
     @Override
