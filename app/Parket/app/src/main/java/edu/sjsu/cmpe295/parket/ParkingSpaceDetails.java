@@ -4,8 +4,6 @@ import android.app.Activity;
 import android.app.ListActivity;
 import android.content.Context;
 import android.graphics.Color;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;

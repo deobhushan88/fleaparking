@@ -1,12 +1,12 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:myapp="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="edu.sjsu.cmpe295.parket.ShowParkingSpacesAroundMe">
     <item
         android:id="@+id/action_search"
         android:title="Search"
         android:orderInCategory="100"
-        myapp:showAsAction="collapseActionView|always"
+        android:showAsAction="collapseActionView|always"
         android:icon="@drawable/ic_action_search"
         ></item>
 </menu>
