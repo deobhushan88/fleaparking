@@ -280,7 +280,6 @@ public class LoginActivity extends Activity implements View.OnClickListener,
 
     protected void onActivityResult(int requestCode, int responseCode, Intent intent) {
         if (requestCode == RC_SIGN_IN) {
-
             if (responseCode == RESULT_OK) {
                 if (intent != null) {
                     // Store the account that user selected

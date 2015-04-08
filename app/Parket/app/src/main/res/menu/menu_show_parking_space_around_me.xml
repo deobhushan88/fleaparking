@@ -6,7 +6,7 @@
         android:id="@+id/action_search"
         android:title="Search"
         android:orderInCategory="100"
-        myapp:showAsAction="collapseActionView|always"
+        android:showAsAction="always"
         android:icon="@drawable/ic_action_search"
         ></item>
 </menu>

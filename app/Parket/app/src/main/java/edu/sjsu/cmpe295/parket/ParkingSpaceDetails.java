@@ -4,13 +4,12 @@ import android.app.Activity;
 import android.app.ListActivity;
 import android.content.Context;
 import android.graphics.Color;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toolbar;
 
 import java.util.ArrayList;
 
@@ -60,36 +59,6 @@ public class ParkingSpaceDetails extends Activity {
         lv.setAdapter(new ParkingSpaceDetailsCustomAdapter(this,list,values));
 
 
-
-
-
-
-
-        /*ArrayAdapter<String> codeLearnArrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, list);
-
-        ListView codeLearnLessons = (ListView)findViewById(R.id.listView);
-
-        codeLearnLessons.setAdapter(codeLearnArrayAdapter);*/
-
-/*
-        String[] values = new String[] { "Address", "Availability", "Rate"};
-        // use your custom layout
-
-        ArrayAdapter<String> adapter1 = new ArrayAdapter<String>(this,
-                R.layout.activity_parking_space_details, R.id.header, values);
-
-        ArrayAdapter<String> adapter2 = new ArrayAdapter<String>(this,
-                R.layout.activity_parking_space_details, R.id.value, list);
-
-
-            setListAdapter(adapter1);
-            setListAdapter(adapter2);*/
-
-
-
-
-
-
     }
 
 
@@ -102,9 +71,7 @@ public class ParkingSpaceDetails extends Activity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
+
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement

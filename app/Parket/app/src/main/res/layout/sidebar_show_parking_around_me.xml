@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:gravity="center"
+    android:background="#5ba4e5"
+    android:layout_height="match_parent">
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:id="@+id/logoDetail"
+        android:src="@drawable/parket_icon_actionbar"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:textSize="14dp"
+        android:textColor="#ffffff"
+        android:layout_gravity="center"
+        android:gravity="left"
+        android:id="@+id/detail"
+        android:layout_alignTop="@+id/logoDetail"
+        android:layout_toEndOf="@+id/logoDetail"
+        android:hint="ABCCC"/>
+</LinearLayout>
