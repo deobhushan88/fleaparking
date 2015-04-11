@@ -9,6 +9,7 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
 
     <permission
         android:name="edu.sjsu.cmpe295.parket.permission.MAPS_RECEIVE"
@@ -44,18 +45,21 @@
         <!-- Activities -->
         <activity
             android:name=".LoginActivity"
-            android:label="@string/title_activity_login" >
+            android:label="@string/title_activity_login"
+            android:screenOrientation="portrait">
         <intent-filter>
             <action android:name="android.intent.action.MAIN" />
 
-            <category android:name="android.intent.category.DEFAULT" />
+            <category android:name="android.intent.category.LAUNCHER" />
         </intent-filter>
         </activity>
 
         <activity
             android:name=".AdvancedSearch"
             android:label="@string/title_activity_advanced_search"
-            android:logo="@drawable/parket_icon_actionbar" >
+            android:screenOrientation="portrait"
+            android:logo="@drawable/parket_icon_actionbar"
+            android:parentActivityName=".ShowParkingSpacesAroundMe">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -65,6 +69,7 @@
         <activity
             android:name=".AddParkingSpace"
             android:label="@string/title_activity_add_parking_space"
+            android:screenOrientation="portrait"
             android:parentActivityName=".AdvancedSearch" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -75,6 +80,7 @@
         <activity
             android:name=".ConfirmAddress"
             android:label="@string/title_activity_confirm_address"
+            android:screenOrientation="portrait"
             android:parentActivityName=".AddParkingSpace" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -84,7 +90,9 @@
         </activity>
         <activity
             android:name=".AdvancedSearchMap"
-            android:label="@string/title_activity_advanced_search_map" >
+            android:label="@string/title_activity_advanced_search_map"
+            android:screenOrientation="portrait"
+            android:parentActivityName=".AdvancedSearch">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -94,6 +102,7 @@
         <activity
             android:name=".ParkingSpaceDetails"
             android:label="@string/title_activity_parking_space_details"
+            android:screenOrientation="portrait"
             android:parentActivityName=".AdvancedSearchMap" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -103,7 +112,8 @@
         </activity>
         <activity
             android:name=".ShowParkingSpacesAroundMe"
-            android:label="@string/title_activity_show_parking_space_around_me">
+            android:label="@string/title_activity_show_parking_space_around_me"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

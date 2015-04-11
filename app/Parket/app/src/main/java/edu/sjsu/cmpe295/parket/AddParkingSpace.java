@@ -7,12 +7,11 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
-import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,8 +20,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import java.io.ByteArrayOutputStream;
 
@@ -35,7 +32,7 @@ public class AddParkingSpace extends Activity {
     String dataPacket;
 
 
-    String address1_GET, address2_GET, city_GET ,state_GET,parkingSpaceLabel_GET,description_GET,zipcode_GET;
+    String address1_GET, address2_GET, city_GET, state_GET, parkingSpaceLabel_GET, description_GET, zipcode_GET;
 
     private String selectedImagePath;
     private ImageView img;
@@ -53,7 +50,7 @@ public class AddParkingSpace extends Activity {
         /*ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);*/
 
-         spinner = (Spinner) findViewById(R.id.state);
+        spinner = (Spinner) findViewById(R.id.state);
         // Create an ArrayAdapter using the string array and a default spinner layout
         ArrayAdapter<CharSequence> adapter;
         adapter = ArrayAdapter.createFromResource(this,
@@ -64,23 +61,18 @@ public class AddParkingSpace extends Activity {
         spinner.setAdapter(adapter);
 
 
-
-        addPhotosButton = (Button) findViewById(R.id.addPhotos); // Replace with id of your button.
-        addPhotosButton.setOnClickListener(new  View.OnClickListener(){
+        addPhotosButton = (Button) findViewById(R.id.addPhotos); // Replace with id of your button_bg_accent.
+        addPhotosButton.setOnClickListener(new View.OnClickListener() {
 
 
             @Override
             public void onClick(View v) {
 
-                Intent in = new   Intent(Intent.ACTION_PICK,android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                Intent in = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                 startActivityForResult(in, RESULT_LOAD_IMAGE);
 
             }
         });
-
-
-
-
 
 
         Button verifyAddress = (Button) findViewById(R.id.verifyAddress);
@@ -100,8 +92,7 @@ public class AddParkingSpace extends Activity {
                 //uploadedPhoto = (TextView)findViewById(R.id.addPhotos);
 
 
-
-                parkingSpaceLabel_GET =   parkingSpaceLabel.getText().toString();
+                parkingSpaceLabel_GET = parkingSpaceLabel.getText().toString();
                 description_GET = description.getText().toString();
                 address1_GET = address1.getText().toString();
                 address2_GET = address2.getText().toString();
@@ -109,12 +100,11 @@ public class AddParkingSpace extends Activity {
                 state_GET = state.getSelectedItem().toString();
                 zipcode_GET = zipcode.getText().toString();
 
-                dataPacket = address1_GET+" "+address2_GET+" "+city_GET+", "+state_GET;
-
+                dataPacket = address1_GET + " " + address2_GET + " " + city_GET + ", " + state_GET;
 
 
                 Bundle bundle = new Bundle();
-                bundle.putString("address",dataPacket);
+                bundle.putString("address", dataPacket);
 
                 loadSavedPreferences();
 
@@ -131,28 +121,26 @@ public class AddParkingSpace extends Activity {
     }
 
 
-
-
     private void loadSavedPreferences() {
         SharedPreferences sharedPreferences = PreferenceManager
                 .getDefaultSharedPreferences(this);
 
-        parkingSpaceLabel.setText(sharedPreferences.getString(parkingSpaceLabel_GET,parkingSpaceLabel_GET));
-        description.setText(sharedPreferences.getString(description_GET,description_GET));
+        parkingSpaceLabel.setText(sharedPreferences.getString(parkingSpaceLabel_GET, parkingSpaceLabel_GET));
+        description.setText(sharedPreferences.getString(description_GET, description_GET));
         address1.setText(sharedPreferences.getString(address1_GET, address1_GET));
-        address2.setText(sharedPreferences.getString(address2_GET,address2_GET));
-        city.setText(sharedPreferences.getString(city_GET,city_GET));
-        zipcode.setText(sharedPreferences.getString(zipcode_GET,zipcode_GET));
+        address2.setText(sharedPreferences.getString(address2_GET, address2_GET));
+        city.setText(sharedPreferences.getString(city_GET, city_GET));
+        zipcode.setText(sharedPreferences.getString(zipcode_GET, zipcode_GET));
 
-        int spinnerValue = sharedPreferences.getInt("User selection",-1);
+        int spinnerValue = sharedPreferences.getInt("User selection", -1);
 
-        if(spinnerValue!=-1)
-        {
+        if (spinnerValue != -1) {
             state.setSelection(spinnerValue);
         }
 
 
     }
+
     private void savePreferences(String key, String value) {
         SharedPreferences sharedPreferences = PreferenceManager
                 .getDefaultSharedPreferences(this);
@@ -160,7 +148,8 @@ public class AddParkingSpace extends Activity {
         editor.putString(key, value);
         editor.commit();
     }
-    public void saveData(){
+
+    public void saveData() {
         savePreferences(parkingSpaceLabel_GET, parkingSpaceLabel.getText().toString());
         savePreferences(parkingSpaceLabel_GET, parkingSpaceLabel.getText().toString());
         savePreferences(address1_GET, address1.getText().toString());
@@ -169,19 +158,15 @@ public class AddParkingSpace extends Activity {
         savePreferences(zipcode_GET, zipcode.getText().toString());
 
     }
+
     @Override
-    public void onBackPressed(){
+    public void onBackPressed() {
         saveData();
         super.onBackPressed();
     }
 
 
-
-
-
-
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-
 
 
         super.onActivityResult(requestCode, resultCode, data);
@@ -208,7 +193,7 @@ public class AddParkingSpace extends Activity {
             //converting image into Base64
             String encodedImage = Base64.encodeToString(byteArrayImage, Base64.DEFAULT);
 
-            Log.d("Encoded Image",encodedImage);
+            Log.d("Encoded Image", encodedImage);
 
         }
 
@@ -234,7 +219,7 @@ public class AddParkingSpace extends Activity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
+        // automatically handle clicks on the Home/Up button_bg_accent, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 

@@ -2,7 +2,6 @@ package edu.sjsu.cmpe295.parket;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
 import android.util.Log;
@@ -10,9 +9,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.google.android.gms.ads.identifier.AdvertisingIdClient;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -28,7 +25,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 
@@ -48,8 +44,7 @@ public class AdvancedSearchMap extends Activity implements OnMapReadyCallback {
     String start_time, end_time;
     Bundle bundle;
     Geocoder coder;
-    int i,j;
-
+    int i, j;
 
 
     @Override
@@ -72,14 +67,12 @@ public class AdvancedSearchMap extends Activity implements OnMapReadyCallback {
             addresses = bundle.getString("addresses");
 
 
-
             if (addresses == null) {
                 Log.v("Address empty", "Address is Empty");
             }
 
 
-
-        } catch(Exception e) {
+        } catch (Exception e) {
 
         }
 
@@ -89,8 +82,7 @@ public class AdvancedSearchMap extends Activity implements OnMapReadyCallback {
 
             jsonArray = jsonObject.getJSONArray("parkingSpaces");
 
-            for(int i=0;i<jsonArray.length();i++)
-            {
+            for (int i = 0; i < jsonArray.length(); i++) {
                 arrObject = jsonArray.getJSONObject(i);
                 latitude.add(Double.parseDouble(arrObject.getString("parkingSpaceLat")));
                 longitude.add(Double.parseDouble(arrObject.getString("parkingSpaceLong")));
@@ -105,7 +97,6 @@ public class AdvancedSearchMap extends Activity implements OnMapReadyCallback {
         }
 
         coder = new Geocoder(this);
-
 
 
         MapFragment mapFragment = (MapFragment) getFragmentManager()
@@ -178,7 +169,7 @@ public class AdvancedSearchMap extends Activity implements OnMapReadyCallback {
     @Override
     public void onMapReady(final GoogleMap map) {
 
-        for(j=0;j<latitude.size();j++) {
+        for (j = 0; j < latitude.size(); j++) {
 
             CameraUpdate center =
                     CameraUpdateFactory.newLatLng(new LatLng(latitude.get(j), longitude.get(j)));
@@ -190,7 +181,6 @@ public class AdvancedSearchMap extends Activity implements OnMapReadyCallback {
 
             map.addMarker(new MarkerOptions()
                     .position(new LatLng(latitude.get(j), longitude.get(j))).title(address.get(j)).flat(false).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
-
 
 
             map.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
@@ -215,54 +205,52 @@ public class AdvancedSearchMap extends Activity implements OnMapReadyCallback {
 
                     String addressMarker = marker.getTitle().toString();
 
-                    for(i=0;i<address.size();i++)
-                    {
-                        if(addressMarker.equals(address.get(i)))
+                    for (i = 0; i < address.size(); i++) {
+                        if (addressMarker.equals(address.get(i)))
                             break;
                     }
 
-                    String ISO_start_time = startTime.get(i).substring(11,19);
+                    String ISO_start_time = startTime.get(i).substring(11, 19);
                     String start_time_array[] = ISO_start_time.split(":");
 
 
-
-                    if (Integer.parseInt(start_time_array[0]) >  12) {
+                    if (Integer.parseInt(start_time_array[0]) > 12) {
                         int time = Integer.parseInt(start_time_array[0]) - 12;
 
-                        start_time = Integer.toString(time)+" pm";
+                        start_time = Integer.toString(time) + " pm";
 
-                    } else if(Integer.parseInt(start_time_array[0]) <  12) {
+                    } else if (Integer.parseInt(start_time_array[0]) < 12) {
                         int time = Integer.parseInt(start_time_array[0]);
 
-                        start_time = Integer.toString(time)+" am";
+                        start_time = Integer.toString(time) + " am";
 
                     } else {
                         int time = Integer.parseInt(start_time_array[0]);
 
-                        start_time = Integer.toString(time)+" pm";
+                        start_time = Integer.toString(time) + " pm";
 
                     }
 
 
-                    String ISO_end_time = endTime.get(i).substring(11,19);
+                    String ISO_end_time = endTime.get(i).substring(11, 19);
                     String end_time_array[] = ISO_end_time.split(":");
 
                     //Log.d("end time  ",ISO_end_time);
 
-                    if (Integer.parseInt(end_time_array[0]) >  12) {
+                    if (Integer.parseInt(end_time_array[0]) > 12) {
                         int time = Integer.parseInt(end_time_array[0]) - 12;
 
-                        end_time = Integer.toString(time)+" pm";
+                        end_time = Integer.toString(time) + " pm";
 
-                    } else if(Integer.parseInt(end_time_array[0]) <  12) {
+                    } else if (Integer.parseInt(end_time_array[0]) < 12) {
                         int time = Integer.parseInt(end_time_array[0]);
 
-                        end_time = Integer.toString(time)+" am";
+                        end_time = Integer.toString(time) + " am";
 
                     } else {
                         int time = Integer.parseInt(end_time_array[0]);
 
-                        end_time = Integer.toString(time)+" pm";
+                        end_time = Integer.toString(time) + " pm";
 
                     }
 
@@ -270,9 +258,9 @@ public class AdvancedSearchMap extends Activity implements OnMapReadyCallback {
                     titleMarker.setText(address.get(i));
 
 
-                    timeMarker.setText(start_time+" - "+end_time);
+                    timeMarker.setText(start_time + " - " + end_time);
 
-                    rateMarker.setText("$"+rate.get(i)+" / hour");
+                    rateMarker.setText("$" + rate.get(i) + " / hour");
 
 
                     return v;
@@ -292,16 +280,14 @@ public class AdvancedSearchMap extends Activity implements OnMapReadyCallback {
                     Toast.makeText(AdvancedSearchMap.this, marker.getTitle(), Toast.LENGTH_SHORT).show();*/
                 String markerTitle = marker.getTitle();
 
-                for(i=0;i<address.size();i++)
-                {
-                    if(markerTitle.equals(address.get(i)))
+                for (i = 0; i < address.size(); i++) {
+                    if (markerTitle.equals(address.get(i)))
                         break;
                 }
 
 
-                Intent newIntent = new Intent(getBaseContext(), ParkingSpaceDetails.class).putExtra("address",address.get(i))
-                        .putExtra("time",start_time+" - "+end_time).putExtra("rate",rate.get(i));
-
+                Intent newIntent = new Intent(getBaseContext(), ParkingSpaceDetails.class).putExtra("address", address.get(i))
+                        .putExtra("time", start_time + " - " + end_time).putExtra("rate", rate.get(i));
 
 
                 startActivity(newIntent);
@@ -309,7 +295,6 @@ public class AdvancedSearchMap extends Activity implements OnMapReadyCallback {
 
             }
         });
-
 
 
     }
@@ -325,7 +310,7 @@ public class AdvancedSearchMap extends Activity implements OnMapReadyCallback {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
+        // automatically handle clicks on the Home/Up button_bg_accent, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 

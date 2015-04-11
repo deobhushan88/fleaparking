@@ -4,7 +4,8 @@
     <color name="primary_dark">#FFA000</color>
     <color name="primary_light">#FFECB3</color>
     <color name="accent">#00C853</color>
-
+    <color name="black">#000000</color>
+    <color name="white">#FFFFFF</color>
 
 
 </resources>

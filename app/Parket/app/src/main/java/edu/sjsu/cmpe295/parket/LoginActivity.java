@@ -12,7 +12,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
-import android.widget.Toolbar;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.SignInButton;
@@ -56,7 +55,7 @@ public class LoginActivity extends Activity implements View.OnClickListener,
     */
     private boolean mIntentInProgress;
 
-    /* Track whether the sign-in button has been clicked so that we know to resolve
+    /* Track whether the sign-in button_bg_accent has been clicked so that we know to resolve
     * all issues preventing sign-in without waiting.
     */
     private boolean mSignInClicked;
@@ -80,6 +79,8 @@ public class LoginActivity extends Activity implements View.OnClickListener,
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        // Set status bar color to black for this activity
+        getWindow().setStatusBarColor(getResources().getColor(R.color.black));
         authUtil = new AuthUtil(getApplicationContext());
 
         // Set up Google Sign in Client
@@ -91,7 +92,7 @@ public class LoginActivity extends Activity implements View.OnClickListener,
                 .addOnConnectionFailedListener(this)
                 .build();
 
-        btnSignIn = (SignInButton)findViewById(R.id.btn_googleSignIn);
+        btnSignIn = (SignInButton) findViewById(R.id.btn_googleSignIn);
         btnSignIn.setOnClickListener(this);
 
         serviceComponent = new ComponentName(this, IdTokenService.class);
@@ -138,7 +139,7 @@ public class LoginActivity extends Activity implements View.OnClickListener,
         jobScheduler.schedule(builder.build());
 
         // Move on to next activity
-        Intent i = new Intent(getApplicationContext(), AdvancedSearch.class);
+        Intent i = new Intent(getApplicationContext(), ShowParkingSpacesAroundMe.class);
         startActivity(i);
     }
 
@@ -257,13 +258,12 @@ public class LoginActivity extends Activity implements View.OnClickListener,
                     Log.e(TAG, "Error parsing auth callback JSON response", e);
                     return false;
                 }
-            }
-            else {
+            } else {
                 JSONObject jo = null;
                 try {
                     jo = new JSONObject(responseBody);
                     Log.e(TAG, "Server returned status code + " + statusCode + " and status "
-                            + jo.getString("status") +" - from auth callback");
+                            + jo.getString("status") + " - from auth callback");
                     return false;
                 } catch (JSONException e) {
                     Log.e(TAG, "Error parsing auth callback JSON response", e);

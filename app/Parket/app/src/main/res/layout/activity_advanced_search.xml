@@ -1,13 +1,15 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="edu.sjsu.cmpe295.parket.AdvancedSearch">
+    tools:context="edu.sjsu.cmpe295.parket.AdvancedSearch"
+    android:orientation="vertical">
 
-    <ImageView
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:src="@drawable/app_background"
-        android:id="@+id/backgroundImage" />
+    <Toolbar
+        android:id="@+id/toolbar_parkingSpacesAroundMe"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/primary"
+        />
 
     <EditText
         android:layout_width="fill_parent"
@@ -16,12 +18,33 @@
         android:hint="Address"
         android:textSize="14sp"
         android:singleLine="true"
-        android:padding="10dp"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="10dp"/>
+        android:padding="20dp"
+         />
 
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <Toolbar
+            android:id="@+id/toolbar_parkingSpacesAroundMe_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/primary_light"
+            />
+        <Toolbar
+            android:id="@+id/toolbar_parkingSpacesAroundMe_startTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/primary_light"
+            />
+        <Toolbar
+            android:id="@+id/toolbar_parkingSpacesAroundMe_endTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/primary_light"
+            />
 
+    </LinearLayout>
 
     <EditText
         android:id="@+id/date"
@@ -32,13 +55,8 @@
         android:editable="false"
         android:focusable="true"
         android:focusableInTouchMode="true"
-        android:layout_above="@+id/startTime"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginBottom="34dp"
-        android:padding="10dp" />
-
-
+        android:padding="20dp"
+         />
 
     <EditText
         android:id="@+id/startTime"
@@ -49,13 +67,8 @@
         android:editable="false"
         android:focusable="true"
         android:focusableInTouchMode="true"
-        android:padding="10dp"
-        android:layout_above="@+id/endTime"
-        android:layout_alignParentStart="true"
-        android:layout_marginBottom="40dp" />
-
-
-
+        android:padding="20dp"
+         />
 
     <EditText
         android:layout_width="fill_parent"
@@ -66,26 +79,17 @@
         android:editable="false"
         android:focusable="true"
         android:focusableInTouchMode="true"
-        android:padding="10dp"
-        android:layout_above="@+id/maxRate"
-        android:layout_alignParentStart="true"
-        android:layout_marginBottom="40dp" />
-
-
-
+        android:padding="20dp"
+         />
     <EditText
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:id="@+id/maxRate"
         android:textSize="14dp"
         android:hint="Maximum Rate"
-        android:padding="10dp"
+        android:padding="20dp"
         android:inputType="number"
-        android:layout_above="@+id/range"
-        android:layout_alignParentStart="true"
-        android:layout_marginBottom="40dp" />
-
-
+         />
 
     <EditText
         android:layout_width="fill_parent"
@@ -93,41 +97,18 @@
         android:textSize="14dp"
         android:id="@+id/range"
         android:hint="Range (Radius in miles)"
-        android:padding="10dp"
         android:inputType="number"
-        android:layout_above="@+id/searchButton"
-        android:layout_alignParentStart="true"
-        android:layout_marginBottom="40dp" />
-
-
-
+        android:padding="20dp" />
 
     <Button
-        android:layout_width="fill_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/searchButton"
         android:text="Search"
         android:textSize="14dp"
-        android:elegantTextHeight="false"
         android:clickable="true"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="true" />
+        android:background="@drawable/button_bg_accent"
+        android:textColor="@color/white"
+        android:layout_gravity="center_horizontal" />
 
-
-
-   <!-- <DatePicker
-        android:id="@+id/datePicker"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />-->
-
-
-        <!--
-        android:gravity="left"
-        android:layout_centerHorizontal="true"
-        -->
-
-
-
-
-
-</RelativeLayout>
+</LinearLayout>

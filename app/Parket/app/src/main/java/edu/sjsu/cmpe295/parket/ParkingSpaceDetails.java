@@ -1,15 +1,11 @@
 package edu.sjsu.cmpe295.parket;
 
 import android.app.Activity;
-import android.app.ListActivity;
 import android.content.Context;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.Toolbar;
 
 import java.util.ArrayList;
 
@@ -42,21 +38,21 @@ public class ParkingSpaceDetails extends Activity {
 
         list.add(title);
         list.add(time);
-        list.add(rate+" per hour");
+        list.add(rate + " per hour");
         list.add("dummy");
         list.add("dummy");
         list.add("dummy");
         list.add("dummy");
 
 
-        String[] values = new String[] { "Address", "Availability", "Rate","dummy","dummy","dummy","dummy"};
+        String[] values = new String[]{"Address", "Availability", "Rate", "dummy", "dummy", "dummy", "dummy"};
 
 
         context = this;
 
         lv = (ListView) findViewById(R.id.listView);
 
-        lv.setAdapter(new ParkingSpaceDetailsCustomAdapter(this,list,values));
+        lv.setAdapter(new ParkingSpaceDetailsCustomAdapter(this, list, values));
 
 
     }
@@ -75,9 +71,9 @@ public class ParkingSpaceDetails extends Activity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
+//        if (id == R.id.action_settings) {
+//            return true;
+//        }
 
         return super.onOptionsItemSelected(item);
     }

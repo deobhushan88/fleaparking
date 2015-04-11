@@ -1,8 +1,8 @@
 package edu.sjsu.cmpe295.parket;
 
 
-import android.os.Bundle;
 import android.app.Fragment;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;

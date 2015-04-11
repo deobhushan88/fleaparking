@@ -25,7 +25,7 @@ public class CredentialStore {
     private static String serverClientId;
 
     public synchronized static CredentialStore getInstance(Context context) {
-        if(instance == null) {
+        if (instance == null) {
             instance = new CredentialStore(context);
         }
         return instance;

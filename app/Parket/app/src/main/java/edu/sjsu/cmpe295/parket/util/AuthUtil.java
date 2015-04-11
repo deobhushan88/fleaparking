@@ -11,7 +11,7 @@ import java.io.InputStreamReader;
 
 /**
  * Created by bdeo on 4/2/15.
- *
+ * <p/>
  * Auth utilities
  */
 public class AuthUtil {
@@ -46,7 +46,7 @@ public class AuthUtil {
     public void setUserEmail(String userEmail) {
         try (FileOutputStream fos = context.openFileOutput(USER_EMAIL_FILE_NAME, Context.MODE_PRIVATE)) {
             fos.write(userEmail.getBytes());
-        } catch (IOException e){
+        } catch (IOException e) {
             Log.e(TAG, "Error writing to userEmailStore", e);
         }
         Log.d(TAG, "setting userEmail: " + userEmail);
@@ -62,13 +62,13 @@ public class AuthUtil {
             InputStreamReader iis = new InputStreamReader(fis);
             BufferedReader br = new BufferedReader(iis);
             String s = null;
-            while((s = br.readLine()) != null) {
+            while ((s = br.readLine()) != null) {
                 sb.append(s);
             }
             fis.close();
             iis.close();
             br.close();
-        } catch (IOException e){
+        } catch (IOException e) {
             Log.e(TAG, "Error reading from userEmailStore", e);
         }
         Log.d(TAG, "getting userEmail : " + sb.toString());
@@ -81,7 +81,7 @@ public class AuthUtil {
     public void setIdToken(String idToken) {
         try (FileOutputStream fos = context.openFileOutput(ID_TOKEN_FILE_NAME, Context.MODE_PRIVATE)) {
             fos.write(idToken.getBytes());
-        } catch (IOException e){
+        } catch (IOException e) {
             Log.e(TAG, "Error writing to idTokenStore", e);
         }
         Log.d(TAG, "setting idToken: " + idToken);
@@ -97,13 +97,13 @@ public class AuthUtil {
             InputStreamReader iis = new InputStreamReader(fis);
             BufferedReader br = new BufferedReader(iis);
             String s = null;
-            while((s = br.readLine()) != null) {
+            while ((s = br.readLine()) != null) {
                 sb.append(s);
             }
             fis.close();
             iis.close();
             br.close();
-        } catch (IOException e){
+        } catch (IOException e) {
             Log.e(TAG, "Error reading from idTokenStore", e);
         }
         Log.d(TAG, "getting idToken : " + sb.toString());
@@ -116,7 +116,7 @@ public class AuthUtil {
     public void setIdTokenExpiry(String expiry) {
         try (FileOutputStream fos = context.openFileOutput(ID_TOKEN_EXPIRY_FILE_NAME, Context.MODE_PRIVATE)) {
             fos.write(expiry.getBytes());
-        } catch (IOException e){
+        } catch (IOException e) {
             Log.e(TAG, "Error writing to idTokenExpiryStore", e);
         }
         Log.d(TAG, "setting idTokenExpiry: " + expiry);
@@ -132,13 +132,13 @@ public class AuthUtil {
             InputStreamReader iis = new InputStreamReader(fis);
             BufferedReader br = new BufferedReader(iis);
             String s = null;
-            while((s = br.readLine()) != null) {
+            while ((s = br.readLine()) != null) {
                 sb.append(s);
             }
             fis.close();
             iis.close();
             br.close();
-        } catch (IOException e){
+        } catch (IOException e) {
             Log.e(TAG, "Error reading from idTokenExpiryStore", e);
         }
         Log.d(TAG, "getting idTokenExpiry : " + sb.toString());

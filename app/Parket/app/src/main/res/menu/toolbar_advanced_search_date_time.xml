@@ -3,6 +3,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="edu.sjsu.cmpe295.parket.AdvancedSearch">
 
-
+    <item
+        android:id="@+id/dateTimeToolbar_date"
+        android:title="Date"
+        android:orderInCategory="1"
+        android:showAsAction="always"
+        android:icon="@drawable/ic_date"
+        ></item>
 
 </menu>

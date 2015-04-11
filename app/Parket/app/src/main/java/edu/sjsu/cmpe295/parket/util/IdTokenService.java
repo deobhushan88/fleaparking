@@ -13,7 +13,7 @@ import java.io.IOException;
 
 /**
  * Created by bdeo on 4/3/15.
- *
+ * <p/>
  * JobService to update Google ID Token before it expires
  */
 public class IdTokenService extends JobService {
