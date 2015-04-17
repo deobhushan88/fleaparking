@@ -26,21 +26,31 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
         <Toolbar
+            android:id="@+id/toolbar_parkingSpacesAroundMe_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.2"
+            android:background="@color/primary_light"
+            />
+        <Toolbar
             android:id="@+id/toolbar_parkingSpacesAroundMe_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_weight="0.266"
             android:background="@color/primary_light"
             />
         <Toolbar
             android:id="@+id/toolbar_parkingSpacesAroundMe_startTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_weight="0.266"
             android:background="@color/primary_light"
             />
         <Toolbar
             android:id="@+id/toolbar_parkingSpacesAroundMe_endTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_weight="0.266"
             android:background="@color/primary_light"
             />
 

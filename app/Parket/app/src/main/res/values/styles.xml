@@ -20,4 +20,10 @@
 
     </style>
 
+    <!-- Custom Toolbar Title -->
+    <style name="ToolbarSmallTextStyle" parent="@android:style/TextAppearance.Small">
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textAlignment">center</item>
+    </style>
+
 </resources>

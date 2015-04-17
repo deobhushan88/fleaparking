@@ -2,6 +2,7 @@
     <string name="app_name">Parket</string>
 
     <!-- Parket Backend -->
+    <string name="backend_base">https://parketb.com</string>
     <string name="backend_auth">https://parketb.com/auth</string>
     <string name="backend_auth_callback">https://parketb.com/auth/callback</string>
     <string name="backend_myparkingspaces">https://parketb.com/users/self/parkingspaces</string>
