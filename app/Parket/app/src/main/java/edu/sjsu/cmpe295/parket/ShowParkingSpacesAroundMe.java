@@ -31,7 +31,14 @@ import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 
+import edu.sjsu.cmpe295.parket.http.RestClient;
+import edu.sjsu.cmpe295.parket.model.request.SearchRequest;
+import edu.sjsu.cmpe295.parket.model.response.SearchResponse;
 import edu.sjsu.cmpe295.parket.util.AuthUtil;
+import edu.sjsu.cmpe295.parket.util.DateUtil;
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 
 public class ShowParkingSpacesAroundMe extends Activity implements OnMapReadyCallback,
@@ -217,9 +224,21 @@ public class ShowParkingSpacesAroundMe extends Activity implements OnMapReadyCal
             googleMap.animateCamera(zoom);
 
             // Fetch parking spaces from web service
+            DateUtil dt = new DateUtil();
+            SearchRequest sr = new SearchRequest(authUtil.getIdToken(), "searchAroundMe",
+                    mUserLocation.getLatitude(), mUserLocation.getLongitude(), dt.now(),
+                    dt.thirtyMinutesFromNow(), 2.0);
+            RestClient.getInstance().search(sr, new Callback<SearchResponse>() {
+                @Override
+                public void success(SearchResponse searchResponse, Response response) {
+                    // handle success -> update UI
+                }
 
-
-
+                @Override
+                public void failure(RetrofitError error) {
+                    // handle failure
+                }
+            });
         }
     }
 

@@ -81,17 +81,24 @@ public class AdvancedSearch extends Activity implements View.OnClickListener {
             }
         });
 
-        // Set up date and time toolbar
+        // Set up date and time toolbars
+        Toolbar iconToolbar = (Toolbar) findViewById(R.id.toolbar_parkingSpacesAroundMe_icon);
+        iconToolbar.setNavigationIcon(R.drawable.ic_time);
+
         Toolbar dateToolbar = (Toolbar) findViewById(R.id.toolbar_parkingSpacesAroundMe_date);
         dateToolbar.setTitle("Date");
-        
-        dateToolbar.setNavigationIcon(R.drawable.ic_date);
+        dateToolbar.setTitleTextAppearance(this, R.style.ToolbarSmallTextStyle);
+//        dateToolbar.setNavigationIcon(R.drawable.ic_date);
+
         Toolbar startTimeToolbar = (Toolbar) findViewById(R.id.toolbar_parkingSpacesAroundMe_startTime);
         startTimeToolbar.setTitle("Start Time");
-        startTimeToolbar.setNavigationIcon(R.drawable.ic_time);
+        startTimeToolbar.setTitleTextAppearance(this, R.style.ToolbarSmallTextStyle);
+//        startTimeToolbar.setNavigationIcon(R.drawable.ic_time);
+
         Toolbar endTimeToolbar = (Toolbar) findViewById(R.id.toolbar_parkingSpacesAroundMe_endTime);
         endTimeToolbar.setTitle("End Time");
-        endTimeToolbar.setNavigationIcon(R.drawable.ic_time);
+        endTimeToolbar.setTitleTextAppearance(this, R.style.ToolbarSmallTextStyle);
+//        endTimeToolbar.setNavigationIcon(R.drawable.ic_time);
 
         StrictMode.ThreadPolicy policy = new StrictMode.
                 ThreadPolicy.Builder().permitAll().build();

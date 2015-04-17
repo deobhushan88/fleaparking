@@ -5,16 +5,34 @@ package edu.sjsu.cmpe295.parket.model;
  */
 public class ParkingSpace {
     String parkingSpaceId;
-    String parkingSpaceOwnerId;
     String parkingSpaceAddress;
-    Float parkingSpaceLat;
-    Float parkingSpaceLong;
+    Double parkingSpaceLat;
+    Double parkingSpaceLong;
     boolean disabledParkingFlag;
-    Float parkingSpaceRate;
+    Double parkingSpaceRate;
     String startDateTime;
     String endDateTime;
     String parkingSpacePhoto;
     String parkingSpaceDescription;
+    String qrCode;
+
+    public ParkingSpace(String parkingSpaceId, String parkingSpaceAddress,
+                        Double parkingSpaceLat, Double parkingSpaceLong,
+                        boolean disabledParkingFlag, Double parkingSpaceRate,
+                        String startDateTime, String endDateTime, String parkingSpacePhoto,
+                        String parkingSpaceDescription, String qrCode) {
+        this.parkingSpaceId = parkingSpaceId;
+        this.parkingSpaceAddress = parkingSpaceAddress;
+        this.parkingSpaceLat = parkingSpaceLat;
+        this.parkingSpaceLong = parkingSpaceLong;
+        this.disabledParkingFlag = disabledParkingFlag;
+        this.parkingSpaceRate = parkingSpaceRate;
+        this.startDateTime = startDateTime;
+        this.endDateTime = endDateTime;
+        this.parkingSpacePhoto = parkingSpacePhoto;
+        this.parkingSpaceDescription = parkingSpaceDescription;
+        this.qrCode = qrCode;
+    }
 
     public String getParkingSpaceId() {
         return parkingSpaceId;
@@ -22,14 +40,6 @@ public class ParkingSpace {
 
     public void setParkingSpaceId(String parkingSpaceId) {
         this.parkingSpaceId = parkingSpaceId;
-    }
-
-    public String getParkingSpaceOwnerId() {
-        return parkingSpaceOwnerId;
-    }
-
-    public void setParkingSpaceOwnerId(String parkingSpaceOwnerId) {
-        this.parkingSpaceOwnerId = parkingSpaceOwnerId;
     }
 
     public String getParkingSpaceAddress() {
@@ -40,19 +50,19 @@ public class ParkingSpace {
         this.parkingSpaceAddress = parkingSpaceAddress;
     }
 
-    public Float getParkingSpaceLat() {
+    public Double getParkingSpaceLat() {
         return parkingSpaceLat;
     }
 
-    public void setParkingSpaceLat(Float parkingSpaceLat) {
+    public void setParkingSpaceLat(Double parkingSpaceLat) {
         this.parkingSpaceLat = parkingSpaceLat;
     }
 
-    public Float getParkingSpaceLong() {
+    public Double getParkingSpaceLong() {
         return parkingSpaceLong;
     }
 
-    public void setParkingSpaceLong(Float parkingSpaceLong) {
+    public void setParkingSpaceLong(Double parkingSpaceLong) {
         this.parkingSpaceLong = parkingSpaceLong;
     }
 
@@ -64,11 +74,11 @@ public class ParkingSpace {
         this.disabledParkingFlag = disabledParkingFlag;
     }
 
-    public Float getParkingSpaceRate() {
+    public Double getParkingSpaceRate() {
         return parkingSpaceRate;
     }
 
-    public void setParkingSpaceRate(Float parkingSpaceRate) {
+    public void setParkingSpaceRate(Double parkingSpaceRate) {
         this.parkingSpaceRate = parkingSpaceRate;
     }
 
@@ -102,5 +112,13 @@ public class ParkingSpace {
 
     public void setParkingSpaceDescription(String parkingSpaceDescription) {
         this.parkingSpaceDescription = parkingSpaceDescription;
+    }
+
+    public String getQrCode() {
+        return qrCode;
+    }
+
+    public void setQrCode(String qrCode) {
+        this.qrCode = qrCode;
     }
 }
