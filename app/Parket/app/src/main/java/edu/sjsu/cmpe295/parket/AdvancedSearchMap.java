@@ -41,6 +41,10 @@ public class AdvancedSearchMap extends Activity implements OnMapReadyCallback {
     ArrayList<String> rate = new ArrayList<String>();
     ArrayList<String> startTime = new ArrayList<String>();
     ArrayList<String> endTime = new ArrayList<String>();
+    ArrayList<String> disabledParkingAvailablity = new ArrayList<String>();
+    ArrayList<String> description = new ArrayList<String>();
+    ArrayList<String> comments = new ArrayList<String>();
+    ArrayList<String> photos = new ArrayList<String>();
     String start_time, end_time;
     Bundle bundle;
     Geocoder coder;
@@ -90,6 +94,8 @@ public class AdvancedSearchMap extends Activity implements OnMapReadyCallback {
                 rate.add(arrObject.getString("parkingSpaceRate"));
                 startTime.add(arrObject.getString("startDateTime"));
                 endTime.add(arrObject.getString("endDateTime"));
+                photos.add(arrObject.getString("parkingSpacePhoto"));
+
 
             }
         } catch (JSONException e) {
@@ -106,65 +112,6 @@ public class AdvancedSearchMap extends Activity implements OnMapReadyCallback {
 
 
     }
-
-
-    /* @Override
-    public void onResume() {
-        super.onResume();
-
-        try {
-
-            addresses = bundle.getString("addresses");
-
-
-
-            if (addresses == null) {
-                Log.v("Address empty", "Address is Empty");
-            }
-
-
-
-        } catch(Exception e) {
-
-        }
-
-
-        try {
-            jsonObject = new JSONObject(addresses);
-
-            jsonArray = jsonObject.getJSONArray("parkingSpaces");
-
-            for(int i=0;i<jsonArray.length();i++)
-            {
-                arrObject = jsonArray.getJSONObject(i);
-                latitude.add(Double.parseDouble(arrObject.getString("parkingSpaceLat")));
-                longitude.add(Double.parseDouble(arrObject.getString("parkingSpaceLong")));
-                address.add(arrObject.getString("parkingSpaceAddress"));
-                rate.add(arrObject.getString("parkingSpaceRate"));
-                startTime.add(arrObject.getString("startDateTime"));
-                endTime.add(arrObject.getString("endDateTime"));
-
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        coder = new Geocoder(this);
-
-
-
-        MapFragment mapFragment = (MapFragment) getFragmentManager()
-                .findFragmentById(R.id.map);
-
-        mapFragment.getMapAsync(this);
-    }
-
-    @Override
-    public void onPause()
-    {
-        super.onPause();
-    }*/
-
 
     @Override
     public void onMapReady(final GoogleMap map) {
@@ -287,7 +234,10 @@ public class AdvancedSearchMap extends Activity implements OnMapReadyCallback {
 
 
                 Intent newIntent = new Intent(getBaseContext(), ParkingSpaceDetails.class).putExtra("address", address.get(i))
-                        .putExtra("time", start_time + " - " + end_time).putExtra("rate", rate.get(i));
+                        .putExtra("time", start_time + " - " + end_time).putExtra("rate", rate.get(i))
+                        .putExtra("disabledAvailablity",disabledParkingAvailablity.get(i)).putExtra("rating","4")
+                        .putExtra("comments",comments.get(i)).putExtra("description","nice parking space. Lot of space to park big vehicle.")
+                        .putExtra("photos",photos.get(i));
 
 
                 startActivity(newIntent);
@@ -299,22 +249,4 @@ public class AdvancedSearchMap extends Activity implements OnMapReadyCallback {
 
     }
 
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_advanced_search_map, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button_bg_accent, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-
-        return super.onOptionsItemSelected(item);
-    }
 }

@@ -20,17 +20,13 @@ public class ParkingSpaceDetails extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.parking_space_listview);
 
-
-        getActionBar().setDisplayHomeAsUpEnabled(true);
-
-
         Bundle bundle = getIntent().getExtras();
 
         String title = bundle.getString("address");
-
         String rate = bundle.getString("rate");
-
         String time = bundle.getString("time");
+        String description = bundle.getString("description");
+        String disabledAvailablity = bundle.getString("status");
 
 
         final ArrayList<String> list = new ArrayList<String>();
@@ -39,13 +35,13 @@ public class ParkingSpaceDetails extends Activity {
         list.add(title);
         list.add(time);
         list.add(rate + " per hour");
-        list.add("dummy");
-        list.add("dummy");
+        list.add(description);
+        list.add(disabledAvailablity);
         list.add("dummy");
         list.add("dummy");
 
 
-        String[] values = new String[]{"Address", "Availability", "Rate", "dummy", "dummy", "dummy", "dummy"};
+        String[] values = new String[]{"Address", "Availability", "Rate", "Description", "Disabled Parking?", "dummy", "dummy"};
 
 
         context = this;
@@ -56,27 +52,5 @@ public class ParkingSpaceDetails extends Activity {
 
 
     }
-
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_parking_space_details, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-//        if (id == R.id.action_settings) {
-//            return true;
-//        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
 
 }
