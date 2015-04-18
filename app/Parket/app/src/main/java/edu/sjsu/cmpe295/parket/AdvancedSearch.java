@@ -37,6 +37,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import edu.sjsu.cmpe295.parket.util.AuthUtil;
+
 
 public class AdvancedSearch extends Activity implements View.OnClickListener {
     MenuInflater inflater;
@@ -53,6 +55,8 @@ public class AdvancedSearch extends Activity implements View.OnClickListener {
     final int ENDTIME_DIALOG_ID = 992;
     String serverResponse;
 
+    AuthUtil authUtil;
+
     public AdvancedSearch() {
     }
 
@@ -60,6 +64,10 @@ public class AdvancedSearch extends Activity implements View.OnClickListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_advanced_search);
+
+        authUtil = new AuthUtil(this);
+
+
 
         // Set up main toolbar
         Toolbar mainToolbar = (Toolbar) findViewById(R.id.toolbar_parkingSpacesAroundMe);
@@ -92,41 +100,22 @@ public class AdvancedSearch extends Activity implements View.OnClickListener {
         endTimeToolbar.setTitleTextAppearance(this, R.style.ToolbarSmallTextStyle);
 //        endTimeToolbar.setNavigationIcon(R.drawable.ic_time);
 
-
-
         StrictMode.ThreadPolicy policy = new StrictMode.
                 ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
-
-
-
-
-        /*ActionBar actionBar = getSupportActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(true);*/
 
         date = (EditText) findViewById(R.id.date);
         calendar = Calendar.getInstance();
         day = calendar.get(Calendar.DAY_OF_MONTH);
         month = calendar.get(Calendar.MONTH);
         year = calendar.get(Calendar.YEAR);
-
-
         date.setOnClickListener(this);
-
         startTime = (EditText) findViewById(R.id.startTime);
         endTime = (EditText) findViewById(R.id.endTime);
-
         hour = calendar.get(Calendar.HOUR_OF_DAY);
         minute = calendar.get(Calendar.MINUTE);
-
         startTime.setOnClickListener(this);
-
-
         endTime.setOnClickListener(this);
-
-
-        // just for setting the app up
-
         Button searchButton = (Button) findViewById(R.id.searchButton);
 
         searchButton.setOnClickListener(new View.OnClickListener() {
@@ -164,6 +153,7 @@ public class AdvancedSearch extends Activity implements View.OnClickListener {
                     postData.add(new BasicNameValuePair("queryStopDateTime", endTime_POST));
                     postData.add(new BasicNameValuePair("maxRate", maxRate_POST));
                     postData.add(new BasicNameValuePair("range", range_POST));
+                    postData.add(new BasicNameValuePair("idToken",authUtil.getIdToken()));
                     httppost.setEntity(new UrlEncodedFormEntity(postData));
 
 

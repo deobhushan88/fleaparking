@@ -97,6 +97,8 @@ public class LoginActivity extends Activity implements View.OnClickListener,
 
         serviceComponent = new ComponentName(this, IdTokenService.class);
 
+
+
     }
 
     @Override
@@ -126,6 +128,8 @@ public class LoginActivity extends Activity implements View.OnClickListener,
     public void onConnected(Bundle bundle) {
         mSignInClicked = false;
         Toast.makeText(this, "User is connected!", Toast.LENGTH_LONG).show();
+
+
 
         // Starting the IdToken service.
         // This will run periodically from here on, updating the idToken

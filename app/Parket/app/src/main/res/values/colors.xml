@@ -6,6 +6,7 @@
     <color name="accent">#00C853</color>
     <color name="black">#000000</color>
     <color name="white">#FFFFFF</color>
+    <color name="light_grey">#ff949c9b</color>
 
 
 </resources>
