@@ -9,7 +9,6 @@ import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
-import android.os.StrictMode;
 import android.util.Log;
 import android.view.MenuInflater;
 import android.view.View;
@@ -20,22 +19,14 @@ import android.widget.EditText;
 import android.widget.TimePicker;
 import android.widget.Toolbar;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.util.EntityUtils;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -44,6 +35,7 @@ import edu.sjsu.cmpe295.parket.model.ParkingSpace;
 import edu.sjsu.cmpe295.parket.model.request.SearchRequest;
 import edu.sjsu.cmpe295.parket.model.response.SearchResponse;
 import edu.sjsu.cmpe295.parket.util.AuthUtil;
+import edu.sjsu.cmpe295.parket.util.DBHandler;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -209,7 +201,7 @@ public class AdvancedSearch extends Activity implements View.OnClickListener {
                    public void success(SearchResponse searchResponse, Response response) {
                        //ServerResponse = searchResponse.getParkingSpaces();
 
-                       db.insertSearchResponse(searchResponse);
+                       db.setSearchResponse(searchResponse);
 
                        count = searchResponse.getCount();
 

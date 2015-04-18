@@ -18,7 +18,7 @@ import edu.sjsu.cmpe295.parket.model.response.SearchResponse;
 public class DBHandler extends SQLiteOpenHelper
 {
     private static final int DATABASE_VERSION = 1;
-    private static final String DATABASE_NAME = "parket.db";
+    private static final String DATABASE_NAME = "parketdb";
 
     // Tables and their columns
     public static final String TABLE_SEARCH = "search";
@@ -46,17 +46,17 @@ public class DBHandler extends SQLiteOpenHelper
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("DROP TABLE IF EXISTS "+DATABASE_NAME+"."+TABLE_SEARCH+";");
         String query = "CREATE TABLE "+ TABLE_SEARCH + "(" +
-                COLUMN_SEARCH_ID + " TEXT PRIMARY KEY" +
-                COLUMN_SEARCH_ADDRESS + " TEXT" +
-                COLUMN_SEARCH_LAT + " REAL" +
-                COLUMN_SEARCH_LONG + " REAL" +
-                COLUMN_SEARCH_DISABLEDPARKING + " INTEGER" +
-                COLUMN_SEARCH_RATE + " REAL" +
-                COLUMN_SEARCH_STARTTIME + "TEXT" +
-                COLUMN_SEARCH_ENDTIME + "TEXT" +
-                COLUMN_SEARCH_PHOTOS + " TEXT" +
-                COLUMN_SEARCH_DESCRIPTION + " TEXT" +
-                COLUMN_SEARCH_QRCODE + " TEXT" + ");";
+                COLUMN_SEARCH_ID + " TEXT PRIMARY KEY, " +
+                COLUMN_SEARCH_ADDRESS + " TEXT, " +
+                COLUMN_SEARCH_LAT + " REAL, " +
+                COLUMN_SEARCH_LONG + " REAL, " +
+                COLUMN_SEARCH_DISABLEDPARKING + " INTEGER, " +
+                COLUMN_SEARCH_RATE + " REAL, " +
+                COLUMN_SEARCH_STARTTIME + " TEXT, " +
+                COLUMN_SEARCH_ENDTIME + " TEXT, " +
+                COLUMN_SEARCH_PHOTOS + " TEXT, " +
+                COLUMN_SEARCH_DESCRIPTION + " TEXT, " +
+                COLUMN_SEARCH_QRCODE + " TEXT " + ");";
         db.execSQL(query);
     }
 
@@ -98,7 +98,7 @@ public class DBHandler extends SQLiteOpenHelper
         SearchResponse sr = null;
         ParkingSpace ps;
         List<ParkingSpace> parkingSpaces = new ArrayList();
-        String query = "SELECT * from " + TABLE_SEARCH;
+        String query = "SELECT * from " + TABLE_SEARCH + ";'";
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor c = db.rawQuery(query, null);
         int count = getRowsCount(TABLE_SEARCH);
@@ -123,7 +123,7 @@ public class DBHandler extends SQLiteOpenHelper
     public int getRowsCount(String tableName)
     {
         SQLiteDatabase db = this.getWritableDatabase();
-        String query = " SELECT COUNT(*) FROM "+ tableName;
+        String query = " SELECT COUNT(*) FROM "+ tableName + ";";
         Cursor c = db.rawQuery(query, null);
         if(c.moveToFirst())
             return c.getCount();
