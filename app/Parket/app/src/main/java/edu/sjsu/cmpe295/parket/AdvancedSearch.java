@@ -6,6 +6,8 @@ import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.util.Log;
@@ -37,7 +39,14 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import edu.sjsu.cmpe295.parket.http.RestClient;
+import edu.sjsu.cmpe295.parket.model.ParkingSpace;
+import edu.sjsu.cmpe295.parket.model.request.SearchRequest;
+import edu.sjsu.cmpe295.parket.model.response.SearchResponse;
 import edu.sjsu.cmpe295.parket.util.AuthUtil;
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 
 public class AdvancedSearch extends Activity implements View.OnClickListener {
@@ -45,17 +54,21 @@ public class AdvancedSearch extends Activity implements View.OnClickListener {
 
     private EditText date, startTime, endTime, maxRate, range;
     private Calendar calendar;
-    private int day, month, year, hour, minute;
+    private int day, month, year, hour, minute, starttime_seconds, endtime_seconds;
     private EditText address;
     private EditText ste;
-    String address_POST, date_POST, startTime_POST, endTime_POST, maxRate_POST, range_POST;
-
+    String address_POST, date_POST, startTime_POST, endTime_POST, maxRate_POST;
+    double range_POST;
     final int DATE_DIALOG_ID = 990;
     final int STARTTIME_DIALOG_ID = 991;
     final int ENDTIME_DIALOG_ID = 992;
     String serverResponse;
-
+    String UTC_startTime, UTC_endTime;
     AuthUtil authUtil;
+    Address location;
+    double lat, lon;
+    List<ParkingSpace> ServerResponse;
+    int count;
 
     public AdvancedSearch() {
     }
@@ -100,10 +113,6 @@ public class AdvancedSearch extends Activity implements View.OnClickListener {
         endTimeToolbar.setTitleTextAppearance(this, R.style.ToolbarSmallTextStyle);
 //        endTimeToolbar.setNavigationIcon(R.drawable.ic_time);
 
-        StrictMode.ThreadPolicy policy = new StrictMode.
-                ThreadPolicy.Builder().permitAll().build();
-        StrictMode.setThreadPolicy(policy);
-
         date = (EditText) findViewById(R.id.date);
         calendar = Calendar.getInstance();
         day = calendar.get(Calendar.DAY_OF_MONTH);
@@ -114,9 +123,14 @@ public class AdvancedSearch extends Activity implements View.OnClickListener {
         endTime = (EditText) findViewById(R.id.endTime);
         hour = calendar.get(Calendar.HOUR_OF_DAY);
         minute = calendar.get(Calendar.MINUTE);
+
         startTime.setOnClickListener(this);
         endTime.setOnClickListener(this);
         Button searchButton = (Button) findViewById(R.id.searchButton);
+
+        final Geocoder coder = new Geocoder(this);
+
+        final DBHandler db = new DBHandler(this);
 
         searchButton.setOnClickListener(new View.OnClickListener() {
 
@@ -138,15 +152,23 @@ public class AdvancedSearch extends Activity implements View.OnClickListener {
                 maxRate_POST = maxRate.getText().toString();
 
                 range = (EditText) findViewById(R.id.range);
-                range_POST = range.getText().toString();
+                range_POST = Double.parseDouble(range.getText().toString());
+
+                if(range_POST==' ') {
+                    range_POST = 0.0;
+
+                }
+
+
+
 
                 HttpClient httpclient = new DefaultHttpClient();
                 HttpPost httppost = new HttpPost("https://parketb.com/search");
 
 
-                try {
+               /* try {
                     // Add your data
-                    List<NameValuePair> postData = new ArrayList<NameValuePair>(6);
+                    *//*List<NameValuePair> postData = new ArrayList<NameValuePair>(6);
                     postData.add(new BasicNameValuePair("action", "searchAroundAddress"));
                     postData.add(new BasicNameValuePair("address", address_POST));
                     postData.add(new BasicNameValuePair("queryStartDateTime", startTime_POST));
@@ -161,7 +183,7 @@ public class AdvancedSearch extends Activity implements View.OnClickListener {
                     HttpResponse response = httpclient.execute(httppost);
 
                     HttpEntity entity = response.getEntity();
-                    serverResponse = EntityUtils.toString(entity);
+                    serverResponse = EntityUtils.toString(entity);*//*
 
 
                     Log.v("Http Post Response:", serverResponse);
@@ -170,19 +192,44 @@ public class AdvancedSearch extends Activity implements View.OnClickListener {
                     // TODO Auto-generated catch block
                 } catch (IOException e) {
                     // TODO Auto-generated catch block
+                }*/
+                try {
+                    List<Address> address = coder.getFromLocationName(address_POST, 1);
+                    location = address.get(0);
+                    lat = location.getLatitude();
+                    lon = location.getLongitude();
                 }
+                catch(Exception e) {
 
-                Bundle bundle = new Bundle();
-                bundle.putString("addresses", serverResponse);
+                }
+               final Bundle bundle = new Bundle();
+               SearchRequest sr = new SearchRequest(authUtil.getIdToken(),"searchAroundAddress",lat, lon,UTC_startTime,UTC_endTime, range_POST);
+               RestClient.getInstance().search(sr, new Callback<SearchResponse>() {
+                   @Override
+                   public void success(SearchResponse searchResponse, Response response) {
+                       //ServerResponse = searchResponse.getParkingSpaces();
 
+                       db.insertSearchResponse(searchResponse);
+
+                       count = searchResponse.getCount();
+
+                   }
+
+                   @Override
+                   public void failure(RetrofitError error) {
+
+                   }
+               });
+
+              /*  for(int i=0;i<count;i++)
+                {
+                    db.insertSearchResponse(ServerResponse.get(i));
+                }*/
 
                 Intent i = new Intent(getBaseContext(), AdvancedSearchMap.class);
-
-                i.putExtras(bundle);
-
+                //i.putExtras(bundle);
                 startActivity(i);
-
-            }
+           }
 
         });
     }
@@ -208,18 +255,13 @@ public class AdvancedSearch extends Activity implements View.OnClickListener {
         }
     }
 
-
     public void onClick(View v) {
-
         address = (EditText) findViewById(R.id.address);
         InputMethodManager imm = (InputMethodManager) getSystemService(
                 Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(address.getWindowToken(), 0);
-
         String clickedComponentID = v.getResources().getResourceName(v.getId());
         Log.v(clickedComponentID, "error head going");
-
-
         if (clickedComponentID.equals("edu.sjsu.cmpe295.parket:id/date"))
             showDialog(DATE_DIALOG_ID);
         else if (clickedComponentID.equals("edu.sjsu.cmpe295.parket:id/startTime"))
@@ -229,7 +271,6 @@ public class AdvancedSearch extends Activity implements View.OnClickListener {
 
     }
 
-
     @Deprecated
     protected Dialog onCreateDialog(int id) {
         if (id == 990)
@@ -238,27 +279,30 @@ public class AdvancedSearch extends Activity implements View.OnClickListener {
             return new TimePickerDialog(this, startTimePickerListener, hour, minute, false);
         else if (id == 992)
             return new TimePickerDialog(this, endTimePickerListener, hour, minute, false);
-
-
         return null;
 
     }
 
-
     private DatePickerDialog.OnDateSetListener datePickerListener = new DatePickerDialog.OnDateSetListener() {
         public void onDateSet(DatePicker view, int selectedYear,
                               int selectedMonth, int selectedDay) {
-            date.setText(selectedDay + " / " + (selectedMonth + 1) + " / "
+            date.setText((selectedMonth + 1) + " / " + selectedDay + " / "
                     + selectedYear);
+            //Log.d("date",date.toString());   2015-03-23T18:00:00Z-08:00
+            UTC_startTime = Integer.toString(selectedYear)+"-"+Integer.toString(selectedMonth)+"-"
+                    +Integer.toString(selectedDay)+"T";
+
+            UTC_endTime = Integer.toString(selectedYear)+"-"+Integer.toString(selectedMonth)+"-"
+                    +Integer.toString(selectedDay)+"T";
         }
     };
 
     private TimePickerDialog.OnTimeSetListener startTimePickerListener = new TimePickerDialog.OnTimeSetListener() {
         @Override
         public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+            starttime_seconds = Calendar.getInstance().get(Calendar.SECOND);
             int hour;
             String am_pm;
-
             if (hourOfDay > 12) {
                 hour = hourOfDay - 12;
                 am_pm = "PM";
@@ -269,26 +313,23 @@ public class AdvancedSearch extends Activity implements View.OnClickListener {
                 hour = hourOfDay;
                 am_pm = "PM";
             }
-
-
             int length = (int) (Math.log10(minute) + 1);
-
             if (length == 1)
-                startTime.setText(hour + " : " + "0" + minute + " " + am_pm);
+                startTime.setText(hour + " : " + "0" + minute + am_pm);
             else
-                startTime.setText(hour + " : " + minute + " " + am_pm);
+                startTime.setText(hour + " : " + minute + am_pm);
+            //2015-03-23T18:00:00Z-08:00
+            UTC_startTime = UTC_startTime + Integer.toString(hourOfDay)+":"+Integer.toString(minute)+":"+
+                    Integer.toString(starttime_seconds)+"Z-08:00";
+    }
 
-
-        }
     };
-
 
     private TimePickerDialog.OnTimeSetListener endTimePickerListener = new TimePickerDialog.OnTimeSetListener() {
         @Override
         public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
             int hour;
             String am_pm;
-
             if (hourOfDay > 12) {
                 hour = hourOfDay - 12;
                 am_pm = "PM";
@@ -299,14 +340,15 @@ public class AdvancedSearch extends Activity implements View.OnClickListener {
                 hour = hourOfDay;
                 am_pm = "PM";
             }
-
-
+            endtime_seconds = Calendar.getInstance().get(Calendar.SECOND);
             int length = (int) (Math.log10(minute) + 1);
-
             if (length == 1)
                 endTime.setText(hour + " : " + "0" + minute + " " + am_pm);
             else
                 endTime.setText(hour + " : " + minute + " " + am_pm);
+            //2015-03-23T18:00:00Z-08:00
+            UTC_endTime = UTC_endTime + Integer.toString(hourOfDay)+":"+Integer.toString(minute)+":"+
+                    Integer.toString(endtime_seconds)+"Z-08:00";
         }
     };
 }

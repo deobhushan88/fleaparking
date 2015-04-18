@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.location.Geocoder;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -26,6 +27,8 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import edu.sjsu.cmpe295.parket.model.ParkingSpace;
 
 
 public class AdvancedSearchMap extends Activity implements OnMapReadyCallback {
@@ -50,38 +53,34 @@ public class AdvancedSearchMap extends Activity implements OnMapReadyCallback {
     Geocoder coder;
     int i, j;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_advanced_search_map);
-
     }
 
     @Override
     protected void onStart() {
         super.onStart();
 
-        bundle = getIntent().getExtras();
+        //bundle = getIntent().getExtras();
+
+
         coder = new Geocoder(this);
+
+
 
 
         try {
 
-            addresses = bundle.getString("addresses");
-
-
-            if (addresses == null) {
-                Log.v("Address empty", "Address is Empty");
-            }
-
+            //addresses = bundle.getString("addresses");
 
         } catch (Exception e) {
 
         }
 
 
-        try {
+       /* try {
             jsonObject = new JSONObject(addresses);
 
             jsonArray = jsonObject.getJSONArray("parkingSpaces");
@@ -100,7 +99,9 @@ public class AdvancedSearchMap extends Activity implements OnMapReadyCallback {
             }
         } catch (JSONException e) {
             e.printStackTrace();
-        }
+        }*/
+
+
 
         coder = new Geocoder(this);
 

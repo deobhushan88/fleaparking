@@ -23,6 +23,12 @@ public class DateUtil {
         this.thirtyMinutesFromCurrentTime.setTime(thirtyMinutesFromCurrentTime.getTime() + 1800000);
     }
 
+    public DateUtil(String date, String time)
+    {
+        this.deviceTimeZone = TimeZone.getDefault();
+
+    }
+
     public String now() {
         return df.format(currentTime);
     }
