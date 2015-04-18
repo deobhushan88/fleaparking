@@ -6,14 +6,14 @@ package edu.sjsu.cmpe295.parket.model.request;
 public class SearchRequest {
     private String idToken;
     private String action;
-    private Double userLat;
-    private Double userLong;
+    private double userLat;
+    private double userLong;
     private String queryStartDateTime;
     private String queryStopDateTime;
-    private Double range;
+    private double range;
 
-    public SearchRequest(String idToken, String action, Double userLat, Double userLong,
-                         String queryStartDateTime, String queryStopDateTime, Double range) {
+    public SearchRequest(String idToken, String action, double userLat, double userLong,
+                         String queryStartDateTime, String queryStopDateTime, double range) {
         this.idToken = idToken;
         this.action = action;
         this.userLat = userLat;
@@ -39,19 +39,19 @@ public class SearchRequest {
         this.action = action;
     }
 
-    public Double getUserLat() {
+    public double getUserLat() {
         return userLat;
     }
 
-    public void setUserLat(Double userLat) {
+    public void setUserLat(double userLat) {
         this.userLat = userLat;
     }
 
-    public Double getUserLong() {
+    public double getUserLong() {
         return userLong;
     }
 
-    public void setUserLong(Double userLong) {
+    public void setUserLong(double userLong) {
         this.userLong = userLong;
     }
 
@@ -71,11 +71,11 @@ public class SearchRequest {
         this.queryStopDateTime = queryStopDateTime;
     }
 
-    public Double getRange() {
+    public double getRange() {
         return range;
     }
 
-    public void setRange(Double range) {
+    public void setRange(double range) {
         this.range = range;
     }
 }

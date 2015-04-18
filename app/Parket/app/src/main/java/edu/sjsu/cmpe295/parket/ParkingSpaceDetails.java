@@ -21,12 +21,12 @@ public class ParkingSpaceDetails extends Activity {
         setContentView(R.layout.parking_space_listview);
 
 
-        getActionBar().setDisplayHomeAsUpEnabled(true);
+//        getActionBar().setDisplayHomeAsUpEnabled(true);
 
 
         Bundle bundle = getIntent().getExtras();
 
-        String title = bundle.getString("address");
+        String title = bundle.getString("parkingSpaceId");
 
         String rate = bundle.getString("rate");
 
@@ -37,8 +37,8 @@ public class ParkingSpaceDetails extends Activity {
 
 
         list.add(title);
-        list.add(time);
-        list.add(rate + " per hour");
+        list.add("time");
+        list.add("rate" + " per hour");
         list.add("dummy");
         list.add("dummy");
         list.add("dummy");
