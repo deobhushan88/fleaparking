@@ -40,6 +40,7 @@ import edu.sjsu.cmpe295.parket.model.ParkingSpace;
 import edu.sjsu.cmpe295.parket.model.request.SearchRequest;
 import edu.sjsu.cmpe295.parket.model.response.SearchResponse;
 import edu.sjsu.cmpe295.parket.util.AuthUtil;
+import edu.sjsu.cmpe295.parket.util.DBHandler;
 import edu.sjsu.cmpe295.parket.util.DateUtil;
 import retrofit.Callback;
 import retrofit.RetrofitError;
@@ -65,8 +66,10 @@ public class ShowParkingSpacesAroundMe extends Activity implements OnMapReadyCal
     boolean mRequestingLocationUpdates = true;
     MapFragment mMapFragment;
 
+    // Utilities
     AuthUtil authUtil;
     DateUtil dateUtil;
+    DBHandler dbHandler;
     private final String TAG = "ShowParkingAroundMe";
 
     @Override
@@ -76,6 +79,7 @@ public class ShowParkingSpacesAroundMe extends Activity implements OnMapReadyCal
 
         authUtil = new AuthUtil(this);
         dateUtil = new DateUtil();
+        dbHandler = new DBHandler(this);
 
         // Set up Google Maps
         mGoogleApiClient = new GoogleApiClient.Builder(this)
@@ -152,6 +156,7 @@ public class ShowParkingSpacesAroundMe extends Activity implements OnMapReadyCal
                 switch (item.getItemId()) {
                     case R.id.action_search:{
                         Intent i = new Intent(getApplicationContext(), AdvancedSearch.class);
+                        // TODO: Implement flow where Advanced Search will return back to this activity
                         startActivity(i);
                         return true;
                     }
@@ -319,6 +324,9 @@ public class ShowParkingSpacesAroundMe extends Activity implements OnMapReadyCal
                         startActivity(i);
                     }
                 });
+
+                // Save the results to DB
+                dbHandler.setSearchResponse(searchResponse);
             }
 
             @Override
@@ -354,6 +362,9 @@ public class ShowParkingSpacesAroundMe extends Activity implements OnMapReadyCal
     @Override
     public void onLocationChanged(Location location) {
         mUserLocation = location;
+        // TODO: This should be disabled when user has returned from AdvancedSearch
+        // Update the map, whenever location is updated
+        mMapFragment.getMapAsync(this);
     }
 
     // Sidebar list view adapter
