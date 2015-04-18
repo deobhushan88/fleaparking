@@ -1,44 +1,79 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent">
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/infowindow_accent_ripple">
+
+    <LinearLayout
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:orientation="horizontal"
+        android:layout_margin="0dp">
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.2"
+            android:scaleX="0.5"
+            android:scaleY="0.5"
+            android:src="@drawable/ic_infowindow_address"/>
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.8"
+            android:layout_gravity="center"
+            android:textAlignment="textEnd"
+            android:id="@+id/markerInfoTitle"/>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:orientation="horizontal"
+        android:layout_margin="0dp">
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.2"
+            android:scaleX="0.5"
+            android:scaleY="0.5"
+            android:src="@drawable/ic_infowindow_time"/>
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.8"
+            android:layout_gravity="center"
+            android:textAlignment="textEnd"
+            android:id="@+id/markerInfoTime"/>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:orientation="horizontal"
+        android:layout_margin="0dp">
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.2"
+            android:scaleX="0.5"
+            android:scaleY="0.5"
+            android:src="@drawable/ic_infowindow_money"/>
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.8"
+            android:layout_gravity="center"
+            android:textAlignment="textEnd"
+            android:id="@+id/markerInfoRate"/>
+    </LinearLayout>
 
     <TextView
-        android:id="@+id/markerInfoTitle"
-        android:layout_width="200dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:background="@color/accent"
-        android:autoText="false"
-        android:textSize="14sp"
-        android:padding="5dp"
-        android:hint="hello there"
-        android:textColor="#FFFFFF"
-    />
-    <TextView
-        android:id="@+id/markerInfoTime"
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:background="@color/accent"
-        android:autoText="false"
-        android:textSize="14sp"
-        android:hint="hello there"
-        android:padding="5dp"
-        android:textColor="#FFFFFF"
-        android:layout_below="@+id/markerInfoTitle"
-         />
-    <TextView
-        android:id="@+id/markerInfoRate"
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:background="@color/accent"
-        android:autoText="false"
-        android:textSize="14sp"
-        android:hint="hello there"
-        android:padding="5dp"
-        android:textColor="#FFFFFF"
-        android:layout_below="@+id/markerInfoTime"
-        />
+        android:layout_gravity="center"
+        android:textAlignment="center"
+        android:paddingTop="2dp"
+        android:paddingBottom="2dp"
+        android:text="@string/text_infowindow_tap_to_book" />
 
-</RelativeLayout>
+</LinearLayout>

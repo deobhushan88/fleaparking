@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -29,12 +30,17 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import edu.sjsu.cmpe295.parket.http.RestClient;
+import edu.sjsu.cmpe295.parket.model.ParkingSpace;
 import edu.sjsu.cmpe295.parket.model.request.SearchRequest;
 import edu.sjsu.cmpe295.parket.model.response.SearchResponse;
 import edu.sjsu.cmpe295.parket.util.AuthUtil;
+import edu.sjsu.cmpe295.parket.util.DBHandler;
 import edu.sjsu.cmpe295.parket.util.DateUtil;
 import retrofit.Callback;
 import retrofit.RetrofitError;
@@ -60,8 +66,10 @@ public class ShowParkingSpacesAroundMe extends Activity implements OnMapReadyCal
     boolean mRequestingLocationUpdates = true;
     MapFragment mMapFragment;
 
+    // Utilities
     AuthUtil authUtil;
-
+    DateUtil dateUtil;
+    DBHandler dbHandler;
     private final String TAG = "ShowParkingAroundMe";
 
     @Override
@@ -70,6 +78,8 @@ public class ShowParkingSpacesAroundMe extends Activity implements OnMapReadyCal
         setContentView(R.layout.activity_show_parking_around_me);
 
         authUtil = new AuthUtil(this);
+        dateUtil = new DateUtil();
+        dbHandler = new DBHandler(this);
 
         // Set up Google Maps
         mGoogleApiClient = new GoogleApiClient.Builder(this)
@@ -146,11 +156,12 @@ public class ShowParkingSpacesAroundMe extends Activity implements OnMapReadyCal
                 switch (item.getItemId()) {
                     case R.id.action_search:{
                         Intent i = new Intent(getApplicationContext(), AdvancedSearch.class);
+                        // TODO: Implement flow where Advanced Search will return back to this activity
                         startActivity(i);
                         return true;
                     }
                     case R.id.action_refresh:{
-                        // TODO
+                        searchAndDisplay(mMapFragment.getMap());
                         return true;
                     }
                 }
@@ -210,36 +221,119 @@ public class ShowParkingSpacesAroundMe extends Activity implements OnMapReadyCal
 
     // Map related callbacks
     @Override
-    public void onMapReady(GoogleMap googleMap) {
+    public void onMapReady(final GoogleMap googleMap) {
         // Show user location layer
         googleMap.setMyLocationEnabled(true);
 
         // Continue process to show markers around it
         if (mUserLocation !=null) {
-            // Zoom in to user location
-            CameraUpdate center = CameraUpdateFactory.newLatLng(new LatLng(mUserLocation.getLatitude(),
-                    mUserLocation.getLongitude()));
-            googleMap.moveCamera(center);
-            CameraUpdate zoom = CameraUpdateFactory.zoomTo(14);
-            googleMap.animateCamera(zoom);
-
-            // Fetch parking spaces from web service
-            DateUtil dt = new DateUtil();
-            SearchRequest sr = new SearchRequest(authUtil.getIdToken(), "searchAroundMe",
-                    mUserLocation.getLatitude(), mUserLocation.getLongitude(), dt.now(),
-                    dt.thirtyMinutesFromNow(), 2.0);
-            RestClient.getInstance().search(sr, new Callback<SearchResponse>() {
-                @Override
-                public void success(SearchResponse searchResponse, Response response) {
-                    // handle success -> update UI
-                }
-
-                @Override
-                public void failure(RetrofitError error) {
-                    // handle failure
-                }
-            });
+            searchAndDisplay(googleMap);
         }
+    }
+
+    // Call to search endpoint, followed by updating UI
+    private void searchAndDisplay(final GoogleMap googleMap) {
+        // Zoom in to user location
+        CameraUpdate center = CameraUpdateFactory.newLatLng(new LatLng(mUserLocation.getLatitude(),
+                mUserLocation.getLongitude()));
+        googleMap.moveCamera(center);
+        CameraUpdate zoom = CameraUpdateFactory.zoomTo(14);
+        googleMap.animateCamera(zoom);
+
+        // Fetch parking spaces from web service
+        SearchRequest sr = new SearchRequest(authUtil.getIdToken(), "searchAroundMe",
+                mUserLocation.getLatitude(), mUserLocation.getLongitude(), dateUtil.now(),
+                dateUtil.thirtyMinutesFromNow(), 2.0);
+        RestClient.getInstance().search(sr, new Callback<SearchResponse>() {
+            @Override
+            public void success(final SearchResponse searchResponse, Response response) {
+                // handle success -> update UI
+                // add markers
+                int i = 0;
+                for (ParkingSpace ps : searchResponse.getParkingSpaces()) {
+                    googleMap.addMarker(new MarkerOptions()
+                            .position(new LatLng(ps.getParkingSpaceLat(),
+                                    ps.getParkingSpaceLong()))
+                            .flat(false)
+                            .title(String.valueOf(i))
+                            .icon(BitmapDescriptorFactory
+                                    .fromResource(R.drawable.ic_map_pin_primary_dark)));
+                    i++;
+                }
+
+                // add infowindow on markers
+                googleMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
+                    @Override
+                    public View getInfoWindow(Marker marker) {
+                        View v = getLayoutInflater().inflate(R.layout.google_map_marker, null);
+                        TextView tvAddress;
+                        TextView tvTime;
+                        TextView tvMoney;
+                        String dateTime;
+                        for (int i = 0; i < searchResponse.getCount(); i++) {
+                            if (marker.getTitle().equals(String.valueOf(i))) {
+                                ParkingSpace parkingSpace = searchResponse
+                                        .getParkingSpaces()
+                                        .get(i);
+                                tvAddress = (TextView) v.findViewById(R.id.markerInfoTitle);
+                                tvAddress.setText(parkingSpace.getParkingSpaceAddress());
+
+                                tvTime= (TextView) v.findViewById(R.id.markerInfoTime);
+                                dateTime = dateUtil.getRangeString(parkingSpace.getStartDateTime(),
+                                        parkingSpace.getEndDateTime());
+                                tvTime.setText(dateTime);
+
+                                tvMoney = (TextView) v.findViewById(R.id.markerInfoRate);
+                                tvMoney.setText(String.valueOf(parkingSpace.getParkingSpaceRate())
+                                        + " per hour");
+                            }
+                        }
+                        return v;
+                    }
+
+                    @Override
+                    public View getInfoContents(Marker marker) {
+                        return null;
+                    }
+                });
+
+                // set infowindow click listener to open parking space detail activity
+                googleMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+                    @Override
+                    public void onInfoWindowClick(Marker marker) {
+                        ParkingSpace parkingSpace = null;
+                        // Identify the marker clicked using its title
+                        for (int i = 0; i < searchResponse.getCount(); i++) {
+                            if (marker.getTitle().equals(String.valueOf(i))) {
+                                // Get the corresponding ParkingSpace object
+                                parkingSpace = searchResponse.getParkingSpaces().get(i);
+                            }
+                        }
+                        // Send the parkingSpaceId to the ParkingSpaceDetails activity in the bundle
+                        Bundle bundle = new Bundle();
+                        try {
+                            bundle.putString("parkingSpaceId", parkingSpace.getParkingSpaceId());
+                        } catch (NullPointerException e) {
+                            Log.e(TAG, "Could not find the corresponding ParkingSpace object", e);
+                        }
+
+                        // ParkingSpaceDetails can use the parkingSpaceId to fetch data to populate
+                        // its list view
+                        Intent i = new Intent(getApplicationContext(), ParkingSpaceDetails.class);
+                        i.putExtras(bundle);
+                        startActivity(i);
+                    }
+                });
+
+                // Save the results to DB
+                dbHandler.setSearchResponse(searchResponse);
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                // TODO: handle failure
+            }
+        });
     }
 
     @Override
@@ -268,6 +362,9 @@ public class ShowParkingSpacesAroundMe extends Activity implements OnMapReadyCal
     @Override
     public void onLocationChanged(Location location) {
         mUserLocation = location;
+        // TODO: This should be disabled when user has returned from AdvancedSearch
+        // Update the map, whenever location is updated
+        mMapFragment.getMapAsync(this);
     }
 
     // Sidebar list view adapter

@@ -21,22 +21,15 @@ public class ParkingSpaceDetails extends Activity {
         setContentView(R.layout.parking_space_listview);
 
         Bundle bundle = getIntent().getExtras();
-
-        String title = bundle.getString("address");
-        String rate = bundle.getString("rate");
-        String time = bundle.getString("time");
-        String description = bundle.getString("description");
-        String disabledAvailablity = bundle.getString("status");
-
-
+        String title = bundle.getString("parkingSpaceId");
         final ArrayList<String> list = new ArrayList<String>();
 
 
         list.add(title);
-        list.add(time);
-        list.add(rate + " per hour");
-        list.add(description);
-        list.add(disabledAvailablity);
+        list.add("time");
+        list.add("rate" + " per hour");
+        list.add("dummy");
+        list.add("dummy");
         list.add("dummy");
         list.add("dummy");
 

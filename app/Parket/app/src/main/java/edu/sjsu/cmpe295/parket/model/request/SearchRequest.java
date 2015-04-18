@@ -39,19 +39,19 @@ public class SearchRequest {
         this.action = action;
     }
 
-    public Double getUserLat() {
+    public double getUserLat() {
         return userLat;
     }
 
-    public void setUserLat(Double userLat) {
+    public void setUserLat(double userLat) {
         this.userLat = userLat;
     }
 
-    public Double getUserLong() {
+    public double getUserLong() {
         return userLong;
     }
 
-    public void setUserLong(Double userLong) {
+    public void setUserLong(double userLong) {
         this.userLong = userLong;
     }
 
@@ -71,11 +71,11 @@ public class SearchRequest {
         this.queryStopDateTime = queryStopDateTime;
     }
 
-    public Double getRange() {
+    public double getRange() {
         return range;
     }
 
-    public void setRange(Double range) {
+    public void setRange(double range) {
         this.range = range;
     }
 }

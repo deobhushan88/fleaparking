@@ -19,11 +19,11 @@ public class SearchResponse {
         return count;
     }
 
-    public void setParkingSpaces(List<ParkingSpace> parkingSpace) {
-        this.parkingSpaces = parkingSpaces;
+    public void setCount(int count) {
+        this.count = count;
     }
 
-    public void setCount(int count) {
-         this.count = count;
+    public void setParkingSpaces(List<ParkingSpace> parkingSpaces) {
+        this.parkingSpaces = parkingSpaces;
     }
 }
