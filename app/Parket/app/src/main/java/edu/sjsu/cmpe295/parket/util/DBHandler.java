@@ -5,13 +5,13 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import edu.sjsu.cmpe295.parket.model.ParkingSpace;
 import edu.sjsu.cmpe295.parket.model.response.SearchResponse;
-
 /**
  * Created by amodrege on 4/17/15.
  */
@@ -20,9 +20,11 @@ public class DBHandler extends SQLiteOpenHelper
     private static final int DATABASE_VERSION = 1;
     private static final String DATABASE_NAME = "parketdb";
 
+    public static final String COLUMN_ID = "id";
+
     // Tables and their columns
     public static final String TABLE_SEARCH = "search";
-    public static final String COLUMN_SEARCH_ID = "parkingSpaceId";
+    public static final String COLUMN_SEARCH_SPACEID = "parkingSpaceId";
     public static final String COLUMN_SEARCH_ADDRESS = "parkingSpaceAddress";
     public static final String COLUMN_SEARCH_LAT = "parkingSpaceLat";
     public static final String COLUMN_SEARCH_LONG = "parkingSpaceLong";
@@ -35,6 +37,20 @@ public class DBHandler extends SQLiteOpenHelper
     public static final String COLUMN_SEARCH_QRCODE= "qrCode";
 
     public static final String TABLE_PARKINGSPACES = "parkingSpaces";
+    public static final String COLUMN_PARKINGSPACES_ID_ = "idToken";
+    public static final String COLUMN_PARKINGSPACES_LABEL = "parkingSpaceLabel";
+    public static final String COLUMN_PARKINGSPACES_DESCRIPTION = "parkingSpaceDescription";
+    public static final String COLUMN_PARKINGSPACES_ADDRESS1 = "addrLine1";
+    public static final String COLUMN_PARKINGSPACES_ADDRESS2 = "addrLine2";
+    public static final String COLUMN_PARKINGSPACES_CITY = "city";
+    public static final String COLUMN_PARKINGSPACES_STATE = "state";
+    public static final String COLUMN_PARKINGSPACES_COUNTRY = "country";
+    public static final String COLUMN_PARKINGSPACES_ZIP= "zip";
+    public static final String COLUMN_PARKINGSPACES_DISABLEDPARKING= "disabledParkingFlag";
+    public static final String COLUMN_PARKINGSPACES_PHOTOS= "parkingSpacePhoto";
+    public static final String COLUMN_PARKINGSPACES_LAT= "parkingSpaceLat";
+    public static final String COLUMN_PARKINGSPACES_LONG= "parkingSpaceLong";
+
 
     public DBHandler(Context context)
     {
@@ -44,9 +60,10 @@ public class DBHandler extends SQLiteOpenHelper
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("DROP TABLE IF EXISTS "+DATABASE_NAME+"."+TABLE_SEARCH+";");
-        String query = "CREATE TABLE "+ TABLE_SEARCH + "(" +
-                COLUMN_SEARCH_ID + " TEXT PRIMARY KEY, " +
+        db.execSQL("DROP TABLE IF EXISTS "+TABLE_SEARCH+";");
+        String query = "CREATE TABLE "+TABLE_SEARCH + "( " +
+                COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                COLUMN_SEARCH_SPACEID + " TEXT, " +
                 COLUMN_SEARCH_ADDRESS + " TEXT, " +
                 COLUMN_SEARCH_LAT + " REAL, " +
                 COLUMN_SEARCH_LONG + " REAL, " +
@@ -68,13 +85,15 @@ public class DBHandler extends SQLiteOpenHelper
     public void setSearchResponse(SearchResponse searchResponse)
     {
         SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues cv = new ContentValues();
+        ContentValues cv;
         List<ParkingSpace> ps = searchResponse.getParkingSpaces();
         int count = searchResponse.getCount();
         int dpStatus;
+
         for(int i=0;i<count;i++)
         {
-            cv.put(COLUMN_SEARCH_ID,ps.get(i).getParkingSpaceId());
+            cv = new ContentValues();
+            cv.put(COLUMN_SEARCH_SPACEID,ps.get(i).getParkingSpaceId());
             cv.put(COLUMN_SEARCH_ADDRESS,ps.get(i).getParkingSpaceAddress());
             cv.put(COLUMN_SEARCH_LAT, ps.get(i).getParkingSpaceLat());
             cv.put(COLUMN_SEARCH_LONG,ps.get(i).getParkingSpaceLong());
@@ -118,6 +137,13 @@ public class DBHandler extends SQLiteOpenHelper
         sr.setParkingSpaces(parkingSpaces);
         sr.setCount(count);
         return sr;
+    }
+
+    public void clearTable(String tableName)
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("DELETE FROM "+TABLE_SEARCH+";");
+
     }
 
     public int getRowsCount(String tableName)
