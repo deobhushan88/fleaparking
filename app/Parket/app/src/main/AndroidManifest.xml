@@ -93,7 +93,6 @@
         </activity>
         <activity
             android:name=".AdvancedSearchMap"
-            android:label="@string/title_activity_advanced_search_map"
             android:parentActivityName=".AdvancedSearch"
             android:screenOrientation="portrait" >
             <intent-filter>
@@ -105,7 +104,7 @@
         <activity
             android:name=".ParkingSpaceDetails"
             android:label="@string/title_activity_parking_space_details"
-            android:parentActivityName=".AdvancedSearchMap"
+            android:parentActivityName=".ShowParkingSpacesAroundMe"
             android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

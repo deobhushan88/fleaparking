@@ -34,6 +34,8 @@ public class ParkingSpace {
         this.qrCode = qrCode;
     }
 
+    public ParkingSpace() {}
+
     public String getParkingSpaceId() {
         return parkingSpaceId;
     }

@@ -5,7 +5,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +19,9 @@ public class DBHandler extends SQLiteOpenHelper
     private static final int DATABASE_VERSION = 1;
     private static final String DATABASE_NAME = "parketdb";
 
+    // Common Column Names
     public static final String COLUMN_ID = "id";
+    public static final String COLUMN_IDTOKEN = "idToken";
 
     // Tables and their columns
     public static final String TABLE_SEARCH = "search";
@@ -37,7 +38,6 @@ public class DBHandler extends SQLiteOpenHelper
     public static final String COLUMN_SEARCH_QRCODE= "qrCode";
 
     public static final String TABLE_PARKINGSPACES = "parkingSpaces";
-    public static final String COLUMN_PARKINGSPACES_ID_ = "idToken";
     public static final String COLUMN_PARKINGSPACES_LABEL = "parkingSpaceLabel";
     public static final String COLUMN_PARKINGSPACES_DESCRIPTION = "parkingSpaceDescription";
     public static final String COLUMN_PARKINGSPACES_ADDRESS1 = "addrLine1";
@@ -84,6 +84,9 @@ public class DBHandler extends SQLiteOpenHelper
 
     public void setSearchResponse(SearchResponse searchResponse)
     {
+        // Clear the table first
+        clearTable(TABLE_SEARCH);
+
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv;
         List<ParkingSpace> ps = searchResponse.getParkingSpaces();
@@ -117,21 +120,22 @@ public class DBHandler extends SQLiteOpenHelper
         SearchResponse sr = null;
         ParkingSpace ps;
         List<ParkingSpace> parkingSpaces = new ArrayList();
-        String query = "SELECT * from " + TABLE_SEARCH + ";'";
+        String query = "SELECT * from " + TABLE_SEARCH + ";";
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor c = db.rawQuery(query, null);
         int count = getRowsCount(TABLE_SEARCH);
         while(c.moveToNext())
         {
-            if(c.getInt(4) == 0)
+            if(c.getInt(5) == 0)
                 dpStatus = false;
             else
                 dpStatus = true;
-            ps = new ParkingSpace(c.getString(0), c.getString(1), c.getDouble(2), c.getDouble(3),
-                    dpStatus, c.getDouble(5), c.getString(6), c.getString(7), c.getString(8),
-                    c.getString(9), c.getString(10));
+            ps = new ParkingSpace(c.getString(1), c.getString(2), c.getDouble(3), c.getDouble(4),
+                    dpStatus, c.getDouble(6), c.getString(7), c.getString(8), c.getString(9),
+                    c.getString(10), c.getString(11));
             parkingSpaces.add(ps);
         }
+        c.close();
         db.close();
         sr = new SearchResponse();
         sr.setParkingSpaces(parkingSpaces);
@@ -139,10 +143,33 @@ public class DBHandler extends SQLiteOpenHelper
         return sr;
     }
 
+    public ParkingSpace getParkingSpaceFromSearchResponse(String parkingSpaceId) {
+        // 0 -> false  &  1 -> true
+        boolean dpStatus;
+        ParkingSpace parkingSpace = new ParkingSpace();
+        String query = "SELECT * from " + TABLE_SEARCH
+                + " WHERE " + COLUMN_SEARCH_SPACEID + " = \"" + parkingSpaceId + "\";";
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor c = db.rawQuery(query, null);
+        while(c.moveToNext())
+        {
+            if(c.getInt(5) == 0)
+                dpStatus = false;
+            else
+                dpStatus = true;
+            parkingSpace = new ParkingSpace(c.getString(1), c.getString(2), c.getDouble(3), c.getDouble(4),
+                    dpStatus, c.getDouble(6), c.getString(7), c.getString(8), c.getString(9),
+                    c.getString(10), c.getString(11));
+        }
+        c.close();
+        db.close();
+        return parkingSpace;
+    }
+
     public void clearTable(String tableName)
     {
         SQLiteDatabase db = this.getWritableDatabase();
-        db.execSQL("DELETE FROM "+TABLE_SEARCH+";");
+        db.execSQL("DELETE FROM "+tableName+";");
 
     }
 

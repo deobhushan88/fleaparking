@@ -12,6 +12,8 @@ public class SearchRequest {
     private String queryStopDateTime;
     private double range;
 
+    public SearchRequest() {}
+
     public SearchRequest(String idToken, String action, double userLat, double userLong,
                          String queryStartDateTime, String queryStopDateTime, double range) {
         this.idToken = idToken;

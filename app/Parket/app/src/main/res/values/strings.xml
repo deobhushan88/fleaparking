@@ -11,7 +11,7 @@
 
     <!-- ShowParkingSpacesAroundMe -->
     <string name="title_activity_show_parking_space_around_me">&#160;&#160;Parket</string>
-    <string name="text_drawer_find_parking">Find Parking</string>
+    <string name="text_drawer_find_parking">Find Parking Around Me</string>
     <string name="text_drawer_rent_out">Rent out Parking Space</string>
     <string name="text_drawer_settings">Settings</string>
     <string name="text_drawer_help">Help</string>
@@ -29,6 +29,9 @@
     <!-- AdvancedSearch -->
     <string name="title_activity_advanced_search">Advanced Search</string>
     <string name="advancedSearch">Advanced Search</string>
+    <string name="advancedSearchDateButtonText">Date</string>
+    <string name="advancedSearchStartTimeButtonText">Start Time</string>
+    <string name="advancedSearchEndTimeButtonText">End Time</string>
 
     <!-- AddParkingSpace -->
     <string name="title_activity_add_parking_space">AddParkingSpace</string>
@@ -91,14 +94,9 @@
     <!-- VerifyAddressButton -->
     <string name="title_activity_verify_address_button">VerifyAddressButton</string>
 
-    <!-- AdvancedSearchMap -->
-    <string name="title_activity_advanced_search_map">AdvancedSearchMap</string>
-    <string name="title_activity_parking_space_details">ParkingSpaceDetails</string>
-
     <!-- ParkingSpaceDetails -->
-    <string name="title_activity_parking_space_details_custom_adapter">
-        ParkingSpaceDetailsCustomAdapter
-    </string>
+    <string name="title_activity_parking_space_details">Parking Space Details</string>
+    <string name="text_parking_space_details_icon_description">ParkingSpaceDetails Icon Description</string>
 
     <string name="hello_world">Hello world!</string>
 

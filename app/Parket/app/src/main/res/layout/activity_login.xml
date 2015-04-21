@@ -7,6 +7,8 @@
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:scaleX="0.75"
+        android:scaleY="0.75"
         android:id="@+id/loginParketLogo"
         android:contentDescription="@string/description_parket_logo"
         android:src="@drawable/parket_logo"

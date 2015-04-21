@@ -7,6 +7,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.Locale;
 import java.util.TimeZone;
 
@@ -74,18 +75,102 @@ public class DateUtil {
         StringBuffer sb = new StringBuffer("");
         sb.append(cStart.get(Calendar.HOUR))
                 .append(":")
-                .append(cStart.get(Calendar.MINUTE))
                 .append(startAddition)
+                .append(cStart.get(Calendar.MINUTE))
                 .append(" ")
                 .append(cStart.getDisplayName(Calendar.AM_PM, style, locale))
                 .append(" - ")
                 .append(cEnd.get(Calendar.HOUR))
                 .append(":")
-                .append(cEnd.get(Calendar.MINUTE))
                 .append(endAddition)
+                .append(cEnd.get(Calendar.MINUTE))
                 .append(" ")
                 .append(cEnd.getDisplayName(Calendar.AM_PM, style, locale));
         return sb.toString();
+    }
+
+    /**
+     * Returns a string representing date in format MM-dd-YYYY ,
+     * given ISO-8601 String representation
+     */
+    public String getDateString(String s) {
+        Calendar calendar = decodeFromString(s);
+        int style = Calendar.LONG;
+        Locale locale = Locale.US;
+        StringBuilder sb = new StringBuilder(calendar.getDisplayName(Calendar.MONTH, style, locale));
+        sb.append(" ").append(calendar.get(Calendar.DATE));
+        return sb.toString();
+    }
+
+    /**
+     *  Returns a string in format HH:mm AM/PM, given the hour and minute values from a TimePicker
+     */
+    public String pickerTimeToString (int hourOfDay, int minute) {
+        StringBuffer sb = new StringBuffer("");
+        int hour = (hourOfDay > 12) ? (hourOfDay - 12) : hourOfDay;
+        hour = (hour == 0) ? 12 : hour;
+        String amPm = (hourOfDay >= 12) ? "PM" : "AM";
+        String minuteAddition = (minute < 10) ? "0" : "";
+        sb.append(hour)
+                .append(":")
+                .append(minuteAddition)
+                .append(minute)
+                .append(" ")
+                .append(amPm);
+        return sb.toString();
+    }
+
+    /**
+     *  Returns a string in format HH:mm, suitable for later use in ISO8601
+     *  given the hour and minute values from a TimePicker. Using this as a
+     *  workaround to make it easy to create ISO8601 strings, need to stop using this
+     *  in future and revert to using {@link #pickerTimeToString(int, int)}
+     */
+    public String pickerTimeToMachineString (int hourOfDay, int minute) {
+        StringBuffer sb = new StringBuffer("");
+        String hourAddition = (hourOfDay < 10) ? "0" : "";
+        String minuteAddition = (minute < 10) ? "0" : "";
+        sb.append(hourAddition)
+                .append(hourOfDay)
+                .append(":")
+                .append(minuteAddition)
+                .append(minute);
+        return sb.toString();
+    }
+
+    /**
+     *  Returns a string in format yyyy-MM-dd, given values from a DatePicker.
+     *  This is suitable for later use in ISO8601 string. Using this as a
+     *  workaround to make it easy to create ISO8601 strings, need to stop using this
+     *  in future and make a pickerDateToString method instead which outputs more human date string
+     */
+    public String pickerDateToMachineString (int year, int month, int day) {
+        StringBuffer sb = new StringBuffer("");
+        String monthAddition = (month < 10) ? "0" : "";
+        String dayAddition = (day < 10) ? "0" : "";
+        sb.append(year)
+                .append("-")
+                .append(monthAddition)
+                .append(month + 1)
+                .append("-")
+                .append(dayAddition)
+                .append(day);
+        return sb.toString();
+    }
+
+    /** Utility method to get timezone offset string
+     *  From http://stackoverflow.com/a/16680815
+     */
+    public String getCurrentTimezoneOffset() {
+
+        TimeZone tz = TimeZone.getDefault();
+        Calendar cal = GregorianCalendar.getInstance(tz);
+        int offsetInMillis = tz.getOffset(cal.getTimeInMillis());
+
+        String offset = String.format("%02d%02d", Math.abs(offsetInMillis / 3600000), Math.abs((offsetInMillis / 60000) % 60));
+        offset = (offsetInMillis >= 0 ? "+" : "-") + offset;
+
+        return offset;
     }
 
 }
