@@ -1,13 +1,17 @@
 package edu.sjsu.cmpe295.parket;
 
 import android.app.Activity;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toolbar;
@@ -24,15 +28,18 @@ public class ParkingSpaceDetails extends Activity {
             "Availability",
             "Rate",
             "Disabled Parking?",
-            "Description"};
+            "Description",
+            "Photo"};
     private final static int[] ICONS = new int[]{
             R.drawable.ic_map_pin_primary_dark,
             R.drawable.ic_time,
             R.drawable.ic_drawer_rent_out_parking,
             R.drawable.ic_accessibility,
-            R.drawable.ic_info};
+            R.drawable.ic_info,
+            R.drawable.ic_photo};
 
     private String[] values;
+    private Bitmap photo;
     private DBHandler dbHandler;
     private DateUtil dateUtil;
     private static final String TAG = "ParkingSpaceDetails";
@@ -77,6 +84,10 @@ public class ParkingSpaceDetails extends Activity {
                 parkingSpace.getParkingSpaceDescription()
         };
 
+        // Initialize the photo object
+        byte[] decoded = Base64.decode(parkingSpace.getParkingSpacePhoto(), Base64.DEFAULT);
+        photo = BitmapFactory.decodeByteArray(decoded, 0, decoded.length);
+
         // Populate List View
         ListView lv = (ListView) findViewById(R.id.parkingSpaceDetailsListView);
         lv.setAdapter(new BaseAdapter() {
@@ -104,6 +115,9 @@ public class ParkingSpaceDetails extends Activity {
                         .findViewById(R.id.list_item_parking_space_details_icon_title);
                 TextView value = (TextView) convertView
                         .findViewById(R.id.list_item_parking_space_details_icon_value);
+                ImageView ivPhoto = new ImageView(getApplicationContext());
+                ivPhoto.setImageBitmap(photo);
+                ivPhoto.setTag("ivPhoto");
 
                 switch (position) {
                     case 0:
@@ -135,14 +149,26 @@ public class ParkingSpaceDetails extends Activity {
                         title.setText(TITLES[4]);
                         value.setText(values[4]);
                         break;
+                    case 5:
+                        icon.setImageResource(ICONS[5]);
+                        icon.setColorFilter(Color.argb(255, 255, 160, 0));
+                        title.setText(TITLES[5]);
+                        // Replace the 2nd text view with the imageview
+                        // TODO: verify that this works for actual user images (say, taken from camera/gallery)
+                        LinearLayout ll = (LinearLayout) convertView
+                                .findViewById(R.id.list_item_parking_space_details_linear_layout);
+                        ll.removeView(value);
+                        ivPhoto.setPadding(2,2,2,2);
+                        ivPhoto.setLayoutParams(new LinearLayout.LayoutParams
+                                (LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
+                        ivPhoto.setAdjustViewBounds(true);
+                        ivPhoto.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+                        ll.addView(ivPhoto);
+                        break;
                 }
                 return convertView;
             }
         });
-
-
-
-
     }
 
 }

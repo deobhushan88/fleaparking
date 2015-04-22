@@ -97,6 +97,7 @@
     <!-- ParkingSpaceDetails -->
     <string name="title_activity_parking_space_details">Parking Space Details</string>
     <string name="text_parking_space_details_icon_description">ParkingSpaceDetails Icon Description</string>
+    <string name="text_parking_space_details_photo_text">Photo</string>
 
     <string name="hello_world">Hello world!</string>
 
