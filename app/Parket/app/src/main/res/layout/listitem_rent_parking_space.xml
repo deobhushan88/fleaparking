@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    android:padding="10dp">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:id = "@+id/list_item_rent_parking_space_linear_layout">
+
+        <TextView
+            android:id="@+id/list_item_rent_parking_space_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding = "2dp"
+            android:textAppearance="@style/ToolbarSmallTextStyle"
+            android:textColor="@color/light_grey"
+            />
+        <TextView
+            android:id="@+id/list_item_rent_parking_space_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding = "2dp"
+            android:textSize="16sp"
+            android:textColor="@color/black"
+            />
+
+    </LinearLayout>
+    <Switch
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/switchBtn"/>
+
+</LinearLayout>

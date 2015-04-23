@@ -133,6 +133,10 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".RentParkingSpace"
+            android:label="@string/title_activity_rent_parking_space" >
+        </activity>
     </application>
 
 </manifest>

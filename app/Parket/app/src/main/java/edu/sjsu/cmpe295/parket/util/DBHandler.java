@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.sjsu.cmpe295.parket.model.ParkingSpace;
+import edu.sjsu.cmpe295.parket.model.UserParkingSpace;
+import edu.sjsu.cmpe295.parket.model.response.QueryParkingSpacesResponse;
 import edu.sjsu.cmpe295.parket.model.response.SearchResponse;
 /**
  * Created by amodrege on 4/17/15.
@@ -38,18 +40,18 @@ public class DBHandler extends SQLiteOpenHelper
     public static final String COLUMN_SEARCH_QRCODE= "qrCode";
 
     public static final String TABLE_PARKINGSPACES = "parkingSpaces";
+    public static final String COLUMN_PARKINGSPACES_SPACEID = "parkingSpaceId";
     public static final String COLUMN_PARKINGSPACES_LABEL = "parkingSpaceLabel";
     public static final String COLUMN_PARKINGSPACES_DESCRIPTION = "parkingSpaceDescription";
-    public static final String COLUMN_PARKINGSPACES_ADDRESS1 = "addrLine1";
-    public static final String COLUMN_PARKINGSPACES_ADDRESS2 = "addrLine2";
-    public static final String COLUMN_PARKINGSPACES_CITY = "city";
-    public static final String COLUMN_PARKINGSPACES_STATE = "state";
-    public static final String COLUMN_PARKINGSPACES_COUNTRY = "country";
-    public static final String COLUMN_PARKINGSPACES_ZIP= "zip";
+    public static final String COLUMN_PARKINGSPACES_ADDRESS = "parkingSpaceAddress";
     public static final String COLUMN_PARKINGSPACES_DISABLEDPARKING= "disabledParkingFlag";
     public static final String COLUMN_PARKINGSPACES_PHOTOS= "parkingSpacePhoto";
     public static final String COLUMN_PARKINGSPACES_LAT= "parkingSpaceLat";
     public static final String COLUMN_PARKINGSPACES_LONG= "parkingSpaceLong";
+    public static final String COLUMN_PARKINGSPACES_AVAILABILITYFLAG= "availabilityFlag";
+    public static final String COLUMN_PARKINGSPACES_STARTDATETIME= "startDateTime";
+    public static final String COLUMN_PARKINGSPACES_ENDDATETIME= "endDateTime";
+    public static final String COLUMN_PARKINGSPACES_RATE= "parkingSpaceRate";
 
 
     public DBHandler(Context context)
@@ -61,7 +63,7 @@ public class DBHandler extends SQLiteOpenHelper
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("DROP TABLE IF EXISTS "+TABLE_SEARCH+";");
-        String query = "CREATE TABLE "+TABLE_SEARCH + "( " +
+        String querySearch = "CREATE TABLE "+TABLE_SEARCH + "( " +
                 COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 COLUMN_SEARCH_SPACEID + " TEXT, " +
                 COLUMN_SEARCH_ADDRESS + " TEXT, " +
@@ -74,12 +76,92 @@ public class DBHandler extends SQLiteOpenHelper
                 COLUMN_SEARCH_PHOTOS + " TEXT, " +
                 COLUMN_SEARCH_DESCRIPTION + " TEXT, " +
                 COLUMN_SEARCH_QRCODE + " TEXT " + ");";
-        db.execSQL(query);
+        db.execSQL(querySearch);
+        db.execSQL("DROP TABLE IF EXISTS "+TABLE_PARKINGSPACES+";");
+        String queryParkingSpaces = "CREATE TABLE "+TABLE_PARKINGSPACES + "( " +
+                COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                COLUMN_PARKINGSPACES_SPACEID + " TEXT, " +
+                COLUMN_PARKINGSPACES_LABEL + " TEXT, " +
+                COLUMN_PARKINGSPACES_DESCRIPTION + " TEXT, " +
+                COLUMN_PARKINGSPACES_ADDRESS + " TEXT, " +
+                COLUMN_PARKINGSPACES_DISABLEDPARKING + " INTEGER, " +
+                COLUMN_PARKINGSPACES_PHOTOS + " TEXT, " +
+                COLUMN_PARKINGSPACES_LAT + " REAL " +
+                COLUMN_PARKINGSPACES_LONG + " REAL " +
+                COLUMN_PARKINGSPACES_AVAILABILITYFLAG + " INTEGER, " +
+                COLUMN_PARKINGSPACES_STARTDATETIME + " TEXT, " +
+                COLUMN_PARKINGSPACES_ENDDATETIME + " TEXT, " +
+                COLUMN_PARKINGSPACES_RATE + " REAL, " +");";
+        db.execSQL(queryParkingSpaces);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // do nothing
+    }
+
+    public void setParkingSpaceResponse(QueryParkingSpacesResponse parkingSpacesResponse)
+    {
+        clearTable(TABLE_PARKINGSPACES);
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues cv;
+        List<UserParkingSpace> ps = parkingSpacesResponse.getParkingSpaces();
+        int count = parkingSpacesResponse.getCount();
+        int dpStatus,availabilityStatus;
+
+        for(int i=0;i<count;i++)
+        {
+            cv = new ContentValues();
+            cv.put(COLUMN_PARKINGSPACES_SPACEID, ps.get(i).getParkingSpaceId());
+            cv.put(COLUMN_PARKINGSPACES_LABEL,ps.get(i).getParkingSpaceLabel());
+            cv.put(COLUMN_PARKINGSPACES_DESCRIPTION, ps.get(i).getParkingSpaceDescription());
+            cv.put(COLUMN_PARKINGSPACES_ADDRESS,ps.get(i).getParkingSpaceAddress());
+            dpStatus = (ps.get(i).isDisabledParkingFlag()) ? 1 : 0;
+            cv.put(COLUMN_PARKINGSPACES_DISABLEDPARKING, dpStatus);
+            cv.put(COLUMN_PARKINGSPACES_PHOTOS, ps.get(i).getParkingSpacePhoto());
+            cv.put(COLUMN_PARKINGSPACES_LAT, ps.get(i).getParkingSpaceLat());
+            cv.put(COLUMN_PARKINGSPACES_LONG,ps.get(i).getParkingSpaceLong());
+            availabilityStatus = (ps.get(i).isParkingSpaceAvailabilityFlag()) ? 1 : 0;
+            cv.put(COLUMN_PARKINGSPACES_AVAILABILITYFLAG,availabilityStatus);
+            cv.put(COLUMN_PARKINGSPACES_STARTDATETIME,ps.get(i).getStartDateTime());
+            cv.put(COLUMN_PARKINGSPACES_ENDDATETIME,ps.get(i).getEndDateTime());
+            cv.put(COLUMN_PARKINGSPACES_RATE,ps.get(i).getParkingSpaceRate());
+        }
+        db.close();
+    }
+
+    public QueryParkingSpacesResponse getParkingSpaceResponse()
+    {
+        boolean dpStatus, availabilityStatus;
+        QueryParkingSpacesResponse psresponse = null;
+        UserParkingSpace ps;
+        List<UserParkingSpace> parkingSpaces = new ArrayList();
+        String query = "SELECT * from " + TABLE_PARKINGSPACES + ";";
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor c = db.rawQuery(query, null);
+        int count = getRowsCount(TABLE_PARKINGSPACES);
+        while (c.moveToNext())
+        {
+            if(c.getInt(5) == 0)
+                dpStatus = false;
+            else
+                dpStatus = true;
+            if(c.getInt(9) == 0)
+                availabilityStatus = false;
+            else
+                availabilityStatus = true;
+            ps = new UserParkingSpace(c.getString(1), c.getString(2), c.getString(3), c.getString(4),
+                    dpStatus, c.getString(6), c.getDouble(7), c.getDouble(8), availabilityStatus,
+                    c.getString(10), c.getString(11), c.getDouble(12));
+            parkingSpaces.add(ps);
+
+        }
+        c.close();
+        db.close();
+        psresponse = new QueryParkingSpacesResponse();
+        psresponse.setParkingSpaces(parkingSpaces);
+        psresponse.setCount(count);
+        return psresponse;
     }
 
     public void setSearchResponse(SearchResponse searchResponse)
