@@ -25,6 +25,7 @@
     <string name="text_welcome">Welcome to Parket!</string>
     <string name="text_about">Parket is a marketplace which helps you find parking where you need it.
     If you have a parking space to rent, you can add it to our marketplace.</string>
+    <string name="shared_pref_key_user_name">userName</string>
 
     <!-- AdvancedSearch -->
     <string name="title_activity_advanced_search">Advanced Search</string>

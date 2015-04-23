@@ -6,7 +6,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Base64;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -72,8 +71,6 @@ public class ParkingSpaceDetails extends Activity {
         // Retrieve the parking space details from the database
         ParkingSpace parkingSpace = dbHandler.getParkingSpaceFromSearchResponse(parkingSpaceId);
         // Populate values
-        Log.d(TAG, parkingSpace.getStartDateTime() + "    " +
-                parkingSpace.getEndDateTime());
         values = new String[]{
                 parkingSpace.getParkingSpaceAddress(),
                 dateUtil.getDateString(parkingSpace.getStartDateTime()) + ", "

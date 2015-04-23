@@ -32,5 +32,4 @@ proguard/
 .DS_Store
 
 # Misc Files
-*.iml
 *.parket
