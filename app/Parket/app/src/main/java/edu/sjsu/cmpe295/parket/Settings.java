@@ -1,67 +1,145 @@
 package edu.sjsu.cmpe295.parket;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.DialogFragment;
+import android.app.TimePickerDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.text.format.DateFormat;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewParent;
-import android.widget.AdapterView;
+import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.BaseAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.Switch;
 import android.widget.TextView;
-import android.widget.Toast;
+import android.widget.TimePicker;
 import android.widget.Toolbar;
+
+import java.util.ArrayList;
+import java.util.Calendar;
+
+import edu.sjsu.cmpe295.parket.util.AuthUtil;
+import edu.sjsu.cmpe295.parket.util.DateUtil;
 
 
 public class Settings extends Activity {
 
-    Context context;
-    ListView lvSettings;
+    AuthUtil authUtil;
+    String[] titles;
+    String[] values;
+    int[] images;
+    SettingsAdapter adapter;
+    ListView listview;
+    Activity host;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_settings);
-
-
-        Toolbar mainToolbar = (Toolbar) findViewById(R.id.toolbar_settings);
-        mainToolbar.setTitle(getResources().getString(R.string.title_activity_settings));
-        mainToolbar.setTitleTextColor(getResources().getColor(R.color.white));
-        mainToolbar.setNavigationIcon(R.drawable.ic_back);
-        mainToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+        setContentView(R.layout.activity_settings_listview);
+        host = this;
+        // Set up toolbar
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_settings);
+        toolbar.setTitle(getResources().getString(R.string.title_activity_settings));
+        toolbar.setTitleTextColor(getResources().getColor(R.color.white));
+        toolbar.setNavigationIcon(R.drawable.ic_back);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 onBackPressed();
             }
         });
-
-        String[] settings1 = new String[]{"Account Information","Email", "Phone no","Payment Information","VISA", "Notification","Push Notification", "Email Notification"};
-
-        String[] settings2 = new String[]{"me@outlook.com","222-333-4444","Ending in 2284"};
-
-        context = this;
-
-        lvSettings = (ListView) findViewById(R.id.listViewSettings);
-
-        lvSettings.setAdapter(new SettingsAdapter(this, settings1, settings2));
-        lvSettings.setItemsCanFocus(true);
-
-        /*lvSettings.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view,int position, long id) {
-
-                Log.d("****(((()))))","ttttt");
-
-                String selected = ((TextView) parent.findViewById(R.id.tv2a1)).getText().toString();
-
-                Toast toast=Toast.makeText(getApplicationContext(), selected, Toast.LENGTH_SHORT);
-                toast.show();
-
-            }
-        });*/
+        authUtil = new AuthUtil(this);
+        String emailAddress = authUtil.getUserEmail();
+        SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
+        String userName = sharedPref.getString(getString(R.string.shared_pref_key_user_name),"No value");
+        titles = new String[]{
+                "Name","Email Address"
+        };
+        values = new String[]{
+                userName, emailAddress
+        };
+        images = new int[]{
+          R.drawable.ic_person,R.drawable.ic_email, R.drawable.ic_phone
+        };
+        // Set list view adapter
+        adapter = new SettingsAdapter(getApplicationContext(),titles,values,images);
+        listview = (ListView) findViewById(R.id.listViewSettings);
+        listview.setAdapter(adapter);
 
     }
 
+    private class SettingsAdapter extends BaseAdapter {
+        Context context;
+        String[] titles;
+        String[] values;
+        int [] images;
+        private LayoutInflater inflater = null;
+
+        public SettingsAdapter(Context context,
+                                       String[] data_titles, String[] data_values, int[] data_images) {
+            this.context = context;
+            this.titles = data_titles;
+            this.values = data_values;
+            this.images = data_images;
+            this.inflater = (LayoutInflater) context.
+                    getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        }
+
+        @Override
+        public int getCount() {
+            return titles.length;
+        }
+
+        @Override
+        public Object getItem(int position) {
+            return null;
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return 0;
+        }
+
+        @Override
+        public View getView(final int position, View convertView, ViewGroup parent) {
+            convertView = inflater.inflate(R.layout.listitem_settings, null);
+            ImageView icon = (ImageView) convertView
+                    .findViewById(R.id.list_item_settings_icon);
+            TextView title = (TextView) convertView
+                    .findViewById(R.id.list_item_settings_title);
+            TextView value = (TextView) convertView
+                    .findViewById(R.id.list_item_settings_value);
+            switch (position)
+            {
+                case 0:
+                    icon.setImageResource(images[0]);
+                    icon.setColorFilter(Color.argb(255, 255, 160, 0));
+                    title.setText(titles[0]);
+                    value.setText(values[0]);
+                    break;
+                case 1:
+                    icon.setImageResource(images[1]);
+                    icon.setColorFilter(Color.argb(255, 255, 160, 0));
+                    title.setText(titles[1]);
+                    value.setText(values[1]);
+                    break;
+            }
+            return convertView;
+        }
+    }
 }

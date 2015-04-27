@@ -91,7 +91,7 @@ public class DBHandler extends SQLiteOpenHelper
                 COLUMN_PARKINGSPACES_AVAILABILITYFLAG + " INTEGER, " +
                 COLUMN_PARKINGSPACES_STARTDATETIME + " TEXT, " +
                 COLUMN_PARKINGSPACES_ENDDATETIME + " TEXT, " +
-                COLUMN_PARKINGSPACES_RATE + " REAL, " +");";
+                COLUMN_PARKINGSPACES_RATE + " REAL " +");";
         db.execSQL(queryParkingSpaces);
     }
 

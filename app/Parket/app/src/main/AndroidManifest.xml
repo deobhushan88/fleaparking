@@ -72,7 +72,7 @@
         <activity
             android:name=".AddParkingSpace"
             android:label="@string/title_activity_add_parking_space"
-            android:parentActivityName=".AdvancedSearch"
+            android:parentActivityName=".RentParkingSpace"
             android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -123,8 +123,8 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".Settings"
-            android:label="@string/title_activity_settings"
+            android:name=".RentParkingSpace"
+            android:label="@string/title_activity_rent_parking_space"
             android:parentActivityName=".ShowParkingSpacesAroundMe"
             android:screenOrientation="portrait" >
             <intent-filter>
@@ -134,8 +134,8 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".RentParkingSpace"
-            android:label="@string/title_activity_rent_parking_space" >
+            android:name=".Settings"
+            android:label="@string/title_activity_settings" >
         </activity>
     </application>
 

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="10dp">
+        <TextView
+            android:id="@+id/list_item_rent_parking_space_empty_placeholder"
+            android:layout_width="640px"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:padding = "2dp"
+            android:textSize="16sp"
+            android:textColor="@color/black"
+            />
+</LinearLayout>
