@@ -11,11 +11,12 @@
         android:layout_height="wrap_content"
         android:scaleX="0.75"
         android:scaleY="0.75"
+        android:padding = "10dp"
         android:id="@+id/list_item_parking_space_details_icon"
         android:contentDescription="@string/text_parking_space_details_icon_description"
         />
     <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:id = "@+id/list_item_parking_space_details_linear_layout">
@@ -24,18 +25,13 @@
             android:id="@+id/list_item_parking_space_details_icon_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:gravity="center"
             android:padding = "2dp"
             android:textAppearance="@style/ToolbarSmallTextStyle"
-            android:textColor="@color/light_grey"
-            android:text="title" />
+            android:textColor="@color/light_grey" />
         <TextView
             android:id="@+id/list_item_parking_space_details_icon_value"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:gravity="center"
             android:padding = "2dp"
             android:textSize="16sp"
             android:textColor="@color/black"

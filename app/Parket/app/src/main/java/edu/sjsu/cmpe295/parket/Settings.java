@@ -1,40 +1,22 @@
 package edu.sjsu.cmpe295.parket;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.app.DialogFragment;
-import android.app.TimePickerDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.text.format.DateFormat;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.BaseAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.Switch;
 import android.widget.TextView;
-import android.widget.TimePicker;
 import android.widget.Toolbar;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-
 import edu.sjsu.cmpe295.parket.util.AuthUtil;
-import edu.sjsu.cmpe295.parket.util.DateUtil;
 
 
 public class Settings extends Activity {
@@ -65,7 +47,7 @@ public class Settings extends Activity {
         });
         authUtil = new AuthUtil(this);
         String emailAddress = authUtil.getUserEmail();
-        SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences sharedPref = getApplicationContext().getSharedPreferences("parket", Context.MODE_PRIVATE);
         String userName = sharedPref.getString(getString(R.string.shared_pref_key_user_name),"No value");
         titles = new String[]{
                 "Name","Email Address"
@@ -80,6 +62,18 @@ public class Settings extends Activity {
         adapter = new SettingsAdapter(getApplicationContext(),titles,values,images);
         listview = (ListView) findViewById(R.id.listViewSettings);
         listview.setAdapter(adapter);
+
+        // Get Button
+        Button signOut = (Button) findViewById(R.id.signOut);
+        signOut.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Sign out, go back to LoginActivity
+                // TODO: Use Google API Client to sign out
+                Intent i = new Intent(getApplicationContext(), LoginActivity.class);
+                startActivity(i);
+            }
+        });
 
     }
 

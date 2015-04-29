@@ -135,7 +135,7 @@ public class LoginActivity extends Activity implements View.OnClickListener,
         if(Plus.PeopleApi.getCurrentPerson(mGoogleApiClient) != null) {
             Person currentPerson = Plus.PeopleApi.getCurrentPerson(mGoogleApiClient);
             // TODO: Use this name, pass it to the backend, and use in settings UI and in the emails
-            SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
+            SharedPreferences sharedPref = getApplicationContext().getSharedPreferences("parket", Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPref.edit();
             editor.putString(getString(R.string.shared_pref_key_user_name), currentPerson.getDisplayName());
             editor.commit();
@@ -254,6 +254,7 @@ public class LoginActivity extends Activity implements View.OnClickListener,
             nameValuePairs.add(new BasicNameValuePair("idToken", idToken));
             nameValuePairs.add(new BasicNameValuePair("serverAuthCode", serverAuthCode));
             httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+            httpPost.setHeader("Content-Type", "application/json");
 
             HttpResponse response = httpClient.execute(httpPost);
             int statusCode = response.getStatusLine().getStatusCode();

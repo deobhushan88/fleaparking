@@ -12,14 +12,12 @@ import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.util.Base64;
 import android.util.Log;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Toolbar;
 
@@ -107,7 +105,7 @@ public class AddParkingSpace extends Activity {
                 city_GET = city.getText().toString();
                 state_GET = state.getSelectedItem().toString();
                 zipcode_GET = zipcode.getText().toString();
-                dataPacket = address1_GET + " " + address2_GET + " " + city_GET + ", " + state_GET;
+                dataPacket = address1_GET + " " + address2_GET + " " + city_GET + ", " + state_GET +  " " + zipcode_GET;
                 Bundle bundle = new Bundle();
                 bundle.putString("address", dataPacket);
                 loadSavedPreferences();

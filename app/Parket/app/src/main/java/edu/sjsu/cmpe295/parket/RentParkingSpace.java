@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.NavUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -12,16 +11,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.CompoundButton;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.Toolbar;
-
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +26,6 @@ import edu.sjsu.cmpe295.parket.model.request.IdTokenParameterRequest;
 import edu.sjsu.cmpe295.parket.model.request.ParkingSpaceAvailabilityRequest;
 import edu.sjsu.cmpe295.parket.model.response.ParkingSpaceAvailabilityResponse;
 import edu.sjsu.cmpe295.parket.model.response.QueryParkingSpacesResponse;
-import edu.sjsu.cmpe295.parket.model.response.SearchResponse;
 import edu.sjsu.cmpe295.parket.util.AuthUtil;
 import edu.sjsu.cmpe295.parket.util.DBHandler;
 import retrofit.Callback;
@@ -79,7 +72,7 @@ public class RentParkingSpace extends Activity {
         toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                Intent i = new Intent(getApplicationContext(), ShowParkingSpacesAroundMe.class);
+                Intent i = new Intent(getApplicationContext(), AddParkingSpace.class);
                 startActivity(i);
                 return true;
             }
@@ -105,6 +98,10 @@ public class RentParkingSpace extends Activity {
                 // Populate list view arrays and update the adapter
                 int count = queryParkingSpacesResponse.getCount();
                 List<UserParkingSpace> userPSList = queryParkingSpacesResponse.getParkingSpaces();
+                title.clear();
+                value.clear();
+                parkingSpaceId.clear();
+                availabilityStatus.clear();
                 for (int i = 0; i < count; i++) {
                     title.add(userPSList.get(i).getParkingSpaceLabel());
                     value.add(userPSList.get(i).getParkingSpaceAddress());
@@ -153,6 +150,10 @@ public class RentParkingSpace extends Activity {
                 // Populate list view arrays and update the adapter
                 int count = queryParkingSpacesResponse.getCount();
                 List<UserParkingSpace> userPSList = queryParkingSpacesResponse.getParkingSpaces();
+                title.clear();
+                value.clear();
+                parkingSpaceId.clear();
+                availabilityStatus.clear();
                 for (int i = 0; i < count; i++) {
                     title.add(userPSList.get(i).getParkingSpaceLabel());
                     value.add(userPSList.get(i).getParkingSpaceAddress());

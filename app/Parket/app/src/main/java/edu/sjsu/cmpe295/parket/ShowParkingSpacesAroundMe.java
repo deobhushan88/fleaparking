@@ -171,8 +171,7 @@ public class ShowParkingSpacesAroundMe extends Activity implements OnMapReadyCal
                         break;
                     }
                     case 3: {
-                        Intent i = new Intent(getApplicationContext(), ParkingSpaceDetails.class);
-                        startActivity(i);
+                        // TODO: Help Activity
                         break;
                     }
                 }
@@ -205,6 +204,7 @@ public class ShowParkingSpacesAroundMe extends Activity implements OnMapReadyCal
             }
         });
 
+        // TODO: If in checkInCheckOutMode, then the fragment is overlapping with the sidebar. Need to Fix
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -641,6 +641,8 @@ public class ShowParkingSpacesAroundMe extends Activity implements OnMapReadyCal
                         .commit();
                 Toast.makeText(getApplicationContext(),
                         "Check Out Successful", Toast.LENGTH_LONG).show();
+                // Clear Map Markers
+                cachedMap.clear();
                 // Set checkInCheckOutMode to false
                 checkInCheckOutMode = false;
             }

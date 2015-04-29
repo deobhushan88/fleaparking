@@ -161,7 +161,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="edu.sjsu.cmpe295.parket.ParkingSpaceDetails" />
         </activity>
-        
+
         <activity
             android:name="com.visa.checkout.VisaMcomActivity"
             android:configChanges="layoutDirection"/>

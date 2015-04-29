@@ -1,5 +1,6 @@
 package edu.sjsu.cmpe295.parket.http;
 
+import retrofit.RequestInterceptor;
 import retrofit.RestAdapter;
 
 /**
@@ -16,9 +17,17 @@ public class RestClient {
     }
 
     private RestClient() {
+        RequestInterceptor requestInterceptor = new RequestInterceptor() {
+            @Override
+            public void intercept(RequestFacade request) {
+                request.addHeader("Content-Type", "application/json");
+            }
+        };
+
         RestAdapter restAdapter = new RestAdapter.Builder()
                 .setEndpoint(BASE_URL)
                 .setLogLevel(RestAdapter.LogLevel.FULL)
+                .setRequestInterceptor(requestInterceptor)
                 .build();
         backendService = restAdapter.create(BackendService.class);
     }
