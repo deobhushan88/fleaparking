@@ -19,10 +19,22 @@ android {
     }
 }
 
+repositories {
+    flatDir { dirs 'libs' }
+    mavenCentral()
+    maven {
+        url "https://dl.bintray.com/journeyapps/maven"
+    }
+}
+
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.google.android.gms:play-services:7.0.0'
     compile 'com.squareup.retrofit:retrofit:1.9.0'
     compile 'com.squareup.okhttp:okhttp-urlconnection:2.0.0'
     compile 'com.squareup.okhttp:okhttp:2.0.0'
+    compile 'com.visa.checkout:sdk_mcom:1.0@aar'
+    compile 'com.journeyapps:zxing-android-embedded:2.3.0@aar'
+    compile 'com.journeyapps:zxing-android-integration:2.3.0@aar'
+    compile 'com.google.zxing:core:3.2.0'
 }

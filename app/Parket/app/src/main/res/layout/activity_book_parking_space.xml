@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="edu.sjsu.cmpe295.parket.ParkingSpaceDetails">
+    tools:context="edu.sjsu.cmpe295.parket.BookParkingSpace">
 
     <Toolbar
         android:id="@+id/toolbar_with_only_back_navigation"
@@ -12,24 +12,31 @@
         android:layout_height="wrap_content"
         android:background="@color/primary"
         />
+
     <ListView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:layout_marginStart="5dp"
         android:layout_marginEnd="10dp"
-        android:id="@+id/parkingSpaceDetailsListView"
+        android:id="@+id/bookParkingSpaceListView"
         android:divider="@drawable/list_item_divider"
         android:dividerHeight="1px"
         android:layout_weight="1"
         />
-    <Button
+
+    <com.visa.checkout.widget.VisaPaymentButton
+        xmlns:custom="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/visaCheckoutButton"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:background="@drawable/button_bg_accent"
-        android:text="@string/btn_parking_space_details_book"
-        android:textColor="@color/white"
-        android:id="@+id/parkingSpaceDetailsBookButton"
-        />
+        android:scaleX = "0.50"
+        android:scaleY = "0.50"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="17dp"
+        android:onClick="checkoutWithVisa"
+        android:layout_marginRight="18dp"
+        custom:visaEnvironment="SANDBOX" />
+
 </LinearLayout>

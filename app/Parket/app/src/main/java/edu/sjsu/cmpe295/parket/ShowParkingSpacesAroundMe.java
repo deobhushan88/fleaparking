@@ -1,7 +1,9 @@
 package edu.sjsu.cmpe295.parket;
 
 import android.app.Activity;
+import android.app.Fragment;
 import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
@@ -18,6 +20,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.Toolbar;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -34,10 +37,15 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 
 import edu.sjsu.cmpe295.parket.http.RestClient;
 import edu.sjsu.cmpe295.parket.model.ParkingSpace;
+import edu.sjsu.cmpe295.parket.model.request.CheckInOutRequest;
 import edu.sjsu.cmpe295.parket.model.request.SearchRequest;
+import edu.sjsu.cmpe295.parket.model.response.BookParkingSpaceResponse;
+import edu.sjsu.cmpe295.parket.model.response.CheckInOutResponse;
 import edu.sjsu.cmpe295.parket.model.response.SearchResponse;
 import edu.sjsu.cmpe295.parket.util.AuthUtil;
 import edu.sjsu.cmpe295.parket.util.DBHandler;
@@ -50,7 +58,7 @@ import retrofit.client.Response;
 public class ShowParkingSpacesAroundMe extends Activity implements OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
-        LocationListener{
+        LocationListener, CheckInFragment.CheckInListener, CheckOutFragment.CheckOutListener{
 
     // Sidebar Related
     String[] menu;
@@ -66,13 +74,15 @@ public class ShowParkingSpacesAroundMe extends Activity implements OnMapReadyCal
     boolean mRequestingLocationUpdates = true;
     MapFragment mMapFragment;
     private GoogleMap cachedMap;
-    private static final int LOCATION_UPDATE_INTERVAL = 10000;
+    private static final int LOCATION_UPDATE_INTERVAL = 50000;
 
     // Utilities
     AuthUtil authUtil;
     DateUtil dateUtil;
     DBHandler dbHandler;
     private final String TAG = "ShowParkingAroundMe";
+    private final String TAG_CHECKIN = "checkIn";
+    private final String TAG_CHECKOUT = "checkOut";
 
     // Intent Request code
     private static final int REQ_ADVANCED_SEARCH = 1;
@@ -82,6 +92,12 @@ public class ShowParkingSpacesAroundMe extends Activity implements OnMapReadyCal
      * advanced search initiated by the user.
      */
     private boolean advancedSearchResultMode = false;
+
+    /**
+     * Flag to indicate whether this activity is currently displaying check in or check out
+     * fragment
+     */
+    private boolean checkInCheckOutMode = false;
 
     // Object to store data given by AdvancedSearch to process
     private SearchRequest advancedSearchRequest = new SearchRequest();
@@ -233,7 +249,7 @@ public class ShowParkingSpacesAroundMe extends Activity implements OnMapReadyCal
     protected void onResume() {
         super.onResume();
         // Start Location Updates
-        if(!advancedSearchResultMode) {
+        if((!advancedSearchResultMode) && (!checkInCheckOutMode)) {
             if (mGoogleApiClient.isConnected()) {
                 LocationServices.FusedLocationApi
                         .requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
@@ -245,7 +261,67 @@ public class ShowParkingSpacesAroundMe extends Activity implements OnMapReadyCal
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == REQ_ADVANCED_SEARCH) {
+        // Check if it is QR Code Scanner result
+        IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+        if (scanResult != null) {
+            // Get the scanned code
+            String scannedQrCode = scanResult.getContents();
+            // Compare it with the correct code for this booking's associated parking space
+            final BookParkingSpaceResponse res = dbHandler.getBookingParkingSpaceResponse();
+            boolean isCorrectParkingSpace = scannedQrCode.equals(res.getQrCode());
+            Log.d(TAG, "scannedQrCode : " + scannedQrCode + ", booking qrCode: " + res.getQrCode());
+            // Check in if code matches
+            // TODO: Need to persist the check in and check out fragment, using some flag, or based on database entry
+            if (isCorrectParkingSpace) {
+                CheckInOutRequest req = new CheckInOutRequest(authUtil.getIdToken(), "checkIn");
+                RestClient.getInstance().checkInOutParkingSpace(res.getBookingId(), req,
+                        new Callback<CheckInOutResponse>() {
+                            @Override
+                            public void success(CheckInOutResponse checkInOutResponse, Response response) {
+                                // Check in successful, now replace with check out fragment
+                                CheckOutFragment checkOutFragment = new CheckOutFragment();
+                                FragmentManager fragmentManager = getFragmentManager();
+                                fragmentManager.beginTransaction()
+                                        .replace(R.id.overlay_checkinout_container, checkOutFragment, TAG_CHECKOUT)
+                                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                                        .commit();
+                                Toast.makeText(getApplicationContext(),
+                                        "Check In successful!", Toast.LENGTH_LONG).show();
+                                // Stop Periodic location updates and and focus on the booked parking space
+                                // so that user can navigate to it
+                                stopLocationUpdates();
+                                cachedMap.clear();
+                                CameraUpdate center = CameraUpdateFactory
+                                        .newLatLng(new LatLng(res.getParkingSpaceLat(),
+                                                res.getParkingSpaceLong()));
+                                cachedMap.moveCamera(center);
+                                CameraUpdate zoom = CameraUpdateFactory.zoomTo(18);
+                                cachedMap.animateCamera(zoom);
+                                MarkerOptions m = new MarkerOptions()
+                                        .position(new LatLng(res.getParkingSpaceLat(),
+                                                res.getParkingSpaceLong()))
+                                        .flat(false)
+                                        .title("bookingMarker")
+                                        .icon(BitmapDescriptorFactory
+                                                .fromResource(R.drawable.ic_map_pin_accent));
+                                cachedMap.addMarker(m);
+                            }
+
+                            @Override
+                            public void failure(RetrofitError error) {
+
+                            }
+                        });
+            }
+            else {
+                // Wrong parking space
+                Toast.makeText(getApplicationContext(),
+                        "You are trying to check in to the wrong parking space", Toast.LENGTH_LONG).show();
+            }
+        }
+
+        // Result from Advanced search
+        else if (requestCode == REQ_ADVANCED_SEARCH) {
             if (resultCode == RESULT_CANCELED) {
                 // do nothing, user returned back without searching from AdvancedSearch
                 // TODO: Handle case when this returns from ParkingSpaceDetails ("Tap to Book")
@@ -286,6 +362,11 @@ public class ShowParkingSpacesAroundMe extends Activity implements OnMapReadyCal
         }
     }
 
+    // Stop Location Updates
+    public void stopLocationUpdates() {
+        LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
+    }
+
     // Call to search endpoint, followed by updating UI
     private void searchAndDisplay(final GoogleMap googleMap) {
         SearchRequest sr;
@@ -300,9 +381,12 @@ public class ShowParkingSpacesAroundMe extends Activity implements OnMapReadyCal
             googleMap.animateCamera(zoom);
         }
         else {
+            // Sending the start time as the next hour, and end time as next hour + 1
+            // Example: At 6:30 PM, user uses app, then send 7:00 PM - 8:00 PM
+            // At 7:00 PM, user uses app, then send 8:00 PM - 9:00 PM (?)
             sr = new SearchRequest(authUtil.getIdToken(), "searchAroundMe",
-                    mUserLocation.getLatitude(), mUserLocation.getLongitude(), dateUtil.now(),
-                    dateUtil.thirtyMinutesFromNow(), 2.0);
+                    mUserLocation.getLatitude(), mUserLocation.getLongitude(), dateUtil.nextHour(),
+                    dateUtil.nextHourPlusOne(), 2.0);
 
             // Zoom in to user location
             CameraUpdate center = CameraUpdateFactory.newLatLng(new LatLng(mUserLocation.getLatitude(),
@@ -345,12 +429,18 @@ public class ShowParkingSpacesAroundMe extends Activity implements OnMapReadyCal
                 googleMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
                     @Override
                     public View getInfoWindow(Marker marker) {
+                        // When marker is clicked, stop the automatic location updates
+                        stopLocationUpdates();
                         View v = getLayoutInflater().inflate(R.layout.google_map_marker, null);
                         TextView tvAddress;
                         TextView tvTime;
                         TextView tvMoney;
                         String dateTime;
                         for (int i = 0; i < searchResponse.getCount(); i++) {
+                            // First check if its a booking marker
+                            if (marker.getTitle().equals("bookingMarker")) {
+                                return getLayoutInflater().inflate(R.layout.booking_map_marker, null);
+                            }
                             if (marker.getTitle().equals(String.valueOf(i))) {
                                 ParkingSpace parkingSpace = searchResponse
                                         .getParkingSpaces()
@@ -390,10 +480,13 @@ public class ShowParkingSpacesAroundMe extends Activity implements OnMapReadyCal
                                 parkingSpace = searchResponse.getParkingSpaces().get(i);
                             }
                         }
-                        // Send the parkingSpaceId to the ParkingSpaceDetails activity in the bundle
+                        // Send the parkingSpaceId and associated qrCode to the ParkingSpaceDetails activity in the bundle
                         Bundle bundle = new Bundle();
                         try {
                             bundle.putString("parkingSpaceId", parkingSpace.getParkingSpaceId());
+                            bundle.putString("qrCode", parkingSpace.getQrCode());
+                            bundle.putDouble("parkingSpaceLat", parkingSpace.getParkingSpaceLat());
+                            bundle.putDouble("parkingSpaceLong", parkingSpace.getParkingSpaceLong());
                         } catch (NullPointerException e) {
                             Log.e(TAG, "Could not find the corresponding ParkingSpace object", e);
                         }
@@ -423,7 +516,7 @@ public class ShowParkingSpacesAroundMe extends Activity implements OnMapReadyCal
         mUserLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
 
         // Start Location Updates
-        if(!advancedSearchResultMode) {
+        if(!advancedSearchResultMode && !checkInCheckOutMode) {
             LocationServices.FusedLocationApi
                     .requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
         }
@@ -492,6 +585,71 @@ public class ShowParkingSpacesAroundMe extends Activity implements OnMapReadyCal
             ((TextView) convertView.findViewById(R.id.list_item_sidebar_text)).setText(text[position]);
             return convertView;
         }
+    }
+
+    // Methods to handle Check in and Check out
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        if(intent.getStringExtra("type").equals("BookParkingSpace")) {
+            // set checkInCheckOutMode
+            checkInCheckOutMode = true;
+            // Add the check in fragment, passing in the bookingId from the DB
+            BookParkingSpaceResponse booking = dbHandler.getBookingParkingSpaceResponse();
+            Fragment checkInFragment = new CheckInFragment();
+            Bundle bundle = new Bundle();
+            bundle.putString("bookingId", booking.getBookingId());
+            checkInFragment.setArguments(bundle);
+            FragmentManager fragmentManager = getFragmentManager();
+            fragmentManager.beginTransaction()
+                    .add(R.id.overlay_checkinout_container, checkInFragment, TAG_CHECKIN)
+                    .commit();
+        }
+    }
+
+    @Override
+    public void onCheckIn() {
+        // Scan QR code at parking location with the camera and verify its correct, if correct then proceed
+        // Using https://github.com/journeyapps/zxing-android-embedded
+        IntentIntegrator qrCodeScanner = new IntentIntegrator(this);
+        qrCodeScanner.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE_TYPES);
+        qrCodeScanner.setPrompt("Scan the QR Code at the Parking Space");
+        qrCodeScanner.setResultDisplayDuration(0);
+        qrCodeScanner.setCameraId(0);
+        qrCodeScanner.initiateScan();
+        // Result of scan is processed in onActivityResult, where we perform the subsequent actions
+    }
+
+    @Override
+    public void onCheckOut() {
+        // Fetch the bookingId from the DB
+        BookParkingSpaceResponse res = dbHandler.getBookingParkingSpaceResponse();
+        // Check out
+        // TODO: Need to persist the check in and check out fragment, using some flag, or based on database entry -->
+        // --> when onCreate is called when the app is restarted
+        CheckInOutRequest req = new CheckInOutRequest(authUtil.getIdToken(), "checkOut");
+        RestClient.getInstance().checkInOutParkingSpace(res.getBookingId(), req,
+                new Callback<CheckInOutResponse>() {
+            @Override
+            public void success(CheckInOutResponse checkInOutResponse, Response response) {
+                // Checkout successful, Clear the database table and remove the checkout fragment
+                dbHandler.clearTable(DBHandler.TABLE_BOOKINGS);
+                FragmentManager fragmentManager = getFragmentManager();
+                fragmentManager.beginTransaction()
+                        .remove(getFragmentManager().findFragmentByTag(TAG_CHECKOUT))
+                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE)
+                        .commit();
+                Toast.makeText(getApplicationContext(),
+                        "Check Out Successful", Toast.LENGTH_LONG).show();
+                // Set checkInCheckOutMode to false
+                checkInCheckOutMode = false;
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+
+            }
+        });
     }
 
 }

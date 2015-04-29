@@ -23,6 +23,7 @@ public class CredentialStore {
 
     // Credentials
     private static String serverClientId;
+    private static String visaApiKey;
 
     public synchronized static CredentialStore getInstance(Context context) {
         if (instance == null) {
@@ -51,6 +52,7 @@ public class CredentialStore {
             try {
                 JSONObject jsonObject = new JSONObject(sb.toString());
                 this.serverClientId = jsonObject.getString("serverClientId");
+                this.visaApiKey = jsonObject.getString("visaApiKey");
 
             } catch (JSONException e) {
                 Log.e(TAG, "Error decoding JSON while getting credentials", e);
@@ -64,4 +66,5 @@ public class CredentialStore {
     public String getServerClientId() {
         return serverClientId;
     }
+    public String getVisaApiKey() {return visaApiKey; }
 }

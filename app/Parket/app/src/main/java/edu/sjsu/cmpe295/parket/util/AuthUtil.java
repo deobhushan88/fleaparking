@@ -30,6 +30,7 @@ public class AuthUtil {
     /* Server Client ID for OAuth */
     private static String SERVER_CLIENT_ID;
     private static String TOKEN_REQUEST_SCOPE;
+    private static String VISA_API_KEY;
 
     private final String TAG = "LoginUtil";
 
@@ -38,6 +39,7 @@ public class AuthUtil {
         this.SERVER_CLIENT_ID = CredentialStore.getInstance(context).getServerClientId();
         this.TOKEN_REQUEST_SCOPE = "audience:server:client_id:" +
                 CredentialStore.getInstance(context).getServerClientId();
+        this.VISA_API_KEY = CredentialStore.getInstance(context).getVisaApiKey();
     }
 
     /**
@@ -157,5 +159,7 @@ public class AuthUtil {
     public String getScope() {
         return TOKEN_REQUEST_SCOPE;
     }
+
+    public String getVisaApiKey() { return VISA_API_KEY; }
 
 }

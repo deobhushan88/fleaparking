@@ -1,6 +1,7 @@
 package edu.sjsu.cmpe295.parket;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -9,6 +10,7 @@ import android.util.Base64;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -41,7 +43,15 @@ public class ParkingSpaceDetails extends Activity {
     private Bitmap photo;
     private DBHandler dbHandler;
     private DateUtil dateUtil;
+
     private static final String TAG = "ParkingSpaceDetails";
+
+    // The parkingSpaceId being displayed by this activity
+    String parkingSpaceId;
+    // The qrCode of that parking space
+    String qrCode;
+    double parkingSpaceLat;
+    double parkingSpaceLong;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,7 +76,10 @@ public class ParkingSpaceDetails extends Activity {
 
         // Get the selected parkingSpaceId
         Bundle bundle = getIntent().getExtras();
-        String parkingSpaceId = bundle.getString("parkingSpaceId");
+        parkingSpaceId = bundle.getString("parkingSpaceId");
+        qrCode = bundle.getString("qrCode");
+        parkingSpaceLat = bundle.getDouble("parkingSpaceLat");
+        parkingSpaceLong = bundle.getDouble("parkingSpaceLong");
 
         // Retrieve the parking space details from the database
         ParkingSpace parkingSpace = dbHandler.getParkingSpaceFromSearchResponse(parkingSpaceId);
@@ -164,6 +177,21 @@ public class ParkingSpaceDetails extends Activity {
                         break;
                 }
                 return convertView;
+            }
+        });
+
+        // Set book now button onClick listener
+        Button bookButton = (Button) findViewById(R.id.parkingSpaceDetailsBookButton);
+        bookButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Pass the parkingSpaceId and associated qrCode to the next activity
+                Intent i = new Intent(getApplicationContext(), BookParkingSpace.class);
+                i.putExtra("parkingSpaceId", parkingSpaceId);
+                i.putExtra("qrCode", qrCode);
+                i.putExtra("parkingSpaceLat", parkingSpaceLat);
+                i.putExtra("parkingSpaceLong", parkingSpaceLong);
+                startActivity(i);
             }
         });
     }

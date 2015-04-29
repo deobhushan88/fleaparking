@@ -36,6 +36,32 @@ public class DateUtil {
     }
 
     /**
+     * Returns a ISO-8601 String representation of time set to the next hour
+     */
+    public String nextHour() {
+        Calendar c = Calendar.getInstance();
+        c.setTime(currentTime);
+        c.set(Calendar.HOUR_OF_DAY, c.get(Calendar.HOUR_OF_DAY + 1));
+        c.set(Calendar.MINUTE, 0);
+        c.set(Calendar.SECOND, 0);
+        c.set(Calendar.MILLISECOND, 0);
+        return df.format(c.getTime());
+    }
+
+    /**
+     * Returns a ISO-8601 String representation of time set to the next hour + 1
+     */
+    public String nextHourPlusOne() {
+        Calendar c = Calendar.getInstance();
+        c.setTime(currentTime);
+        c.set(Calendar.HOUR_OF_DAY, c.get(Calendar.HOUR_OF_DAY + 2));
+        c.set(Calendar.MINUTE, 0);
+        c.set(Calendar.SECOND, 0);
+        c.set(Calendar.MILLISECOND, 0);
+        return df.format(c.getTime());
+    }
+
+    /**
      * Returns ISO-8601 String representation of current time + 30 minutes
      */
     public String thirtyMinutesFromNow() {
@@ -171,6 +197,14 @@ public class DateUtil {
         offset = (offsetInMillis >= 0 ? "+" : "-") + offset;
 
         return offset;
+    }
+
+    /**
+     * Returns the given calendar object as an ISO8601 formatted string
+     *
+     */
+    public String getFormattedString(Calendar c) {
+        return df.format(c.getTime());
     }
 
 }

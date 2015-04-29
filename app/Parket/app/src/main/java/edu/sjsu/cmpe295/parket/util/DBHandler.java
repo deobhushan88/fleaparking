@@ -11,6 +11,7 @@ import java.util.List;
 
 import edu.sjsu.cmpe295.parket.model.ParkingSpace;
 import edu.sjsu.cmpe295.parket.model.UserParkingSpace;
+import edu.sjsu.cmpe295.parket.model.response.BookParkingSpaceResponse;
 import edu.sjsu.cmpe295.parket.model.response.QueryParkingSpacesResponse;
 import edu.sjsu.cmpe295.parket.model.response.SearchResponse;
 /**
@@ -53,6 +54,12 @@ public class DBHandler extends SQLiteOpenHelper
     public static final String COLUMN_PARKINGSPACES_ENDDATETIME= "endDateTime";
     public static final String COLUMN_PARKINGSPACES_RATE= "parkingSpaceRate";
 
+    public static final String TABLE_BOOKINGS = "bookings";
+    public static final String COLUMN_BOOKINGS_BOOKINGID = "bookingId";
+    public static final String COLUMN_BOOKINGS_QRCODE = "qrCode";
+    public static final String COLUMN_BOOKINGS_PARKINGSPACELAT = "parkingSpaceLat";
+    public static final String COLUMN_BOOKINGS_PARKINGSPACELONG = "parkingSpaceLong";
+
 
     public DBHandler(Context context)
     {
@@ -91,8 +98,16 @@ public class DBHandler extends SQLiteOpenHelper
                 COLUMN_PARKINGSPACES_AVAILABILITYFLAG + " INTEGER, " +
                 COLUMN_PARKINGSPACES_STARTDATETIME + " TEXT, " +
                 COLUMN_PARKINGSPACES_ENDDATETIME + " TEXT, " +
-                COLUMN_PARKINGSPACES_RATE + " REAL, " +");";
+                COLUMN_PARKINGSPACES_RATE + " REAL " +");";
         db.execSQL(queryParkingSpaces);
+        db.execSQL("DROP TABLE IF EXISTS "+TABLE_BOOKINGS+";");
+        String queryBookings = "CREATE TABLE "+TABLE_BOOKINGS + "( " +
+                COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                COLUMN_BOOKINGS_BOOKINGID + " TEXT, " +
+                COLUMN_BOOKINGS_QRCODE + " TEXT, " +
+                COLUMN_BOOKINGS_PARKINGSPACELAT + " REAL, " +
+                COLUMN_BOOKINGS_PARKINGSPACELONG + " REAL " +");";
+        db.execSQL(queryBookings);
     }
 
     @Override
@@ -247,6 +262,41 @@ public class DBHandler extends SQLiteOpenHelper
         db.close();
         return parkingSpace;
     }
+
+    public void setBookingParkingSpaceResponse(BookParkingSpaceResponse response, String qrCode,
+                                               double parkingSpaceLat, double parkingSpaceLong) {
+        // Clear the table
+        // TODO: This means only one booking at a time! When support multiple bookings later, modify this.
+        clearTable(TABLE_BOOKINGS);
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues cv;
+        cv = new ContentValues();
+        cv.put(COLUMN_BOOKINGS_BOOKINGID, response.getBookingId());
+        cv.put(COLUMN_BOOKINGS_QRCODE, qrCode);
+        cv.put(COLUMN_BOOKINGS_PARKINGSPACELAT, parkingSpaceLat);
+        cv.put(COLUMN_BOOKINGS_PARKINGSPACELONG, parkingSpaceLong);
+        db.insert(TABLE_BOOKINGS, null, cv);
+        db.close();
+    }
+
+    public BookParkingSpaceResponse getBookingParkingSpaceResponse() {
+        BookParkingSpaceResponse bookParkingSpaceResponse = null;
+        String query = "SELECT * from " + TABLE_BOOKINGS + ";";
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor c = db.rawQuery(query, null);
+        int count = getRowsCount(TABLE_BOOKINGS);
+        while(c.moveToNext())
+        {
+            bookParkingSpaceResponse = new BookParkingSpaceResponse(c.getString(1));
+            bookParkingSpaceResponse.setQrCode(c.getString(2));
+            bookParkingSpaceResponse.setParkingSpaceLat(c.getDouble(3));
+            bookParkingSpaceResponse.setParkingSpaceLong(c.getDouble(4));
+        }
+        c.close();
+        db.close();
+        return bookParkingSpaceResponse;
+    }
+
 
     public void clearTable(String tableName)
     {

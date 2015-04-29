@@ -135,8 +135,21 @@
         </activity>
         <activity
             android:name=".RentParkingSpace"
-            android:label="@string/title_activity_rent_parking_space" >
+            android:label="@string/title_activity_rent_parking_space"
+            android:screenOrientation="portrait">
         </activity>
+        <activity
+            android:name=".BookParkingSpace"
+            android:label="@string/title_activity_book_parking_space"
+            android:parentActivityName=".ParkingSpaceDetails"
+            android:screenOrientation="portrait">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="edu.sjsu.cmpe295.parket.ParkingSpaceDetails" />
+        </activity>
+        <activity
+            android:name="com.visa.checkout.VisaMcomActivity"
+            android:configChanges="layoutDirection"/>
     </application>
 
 </manifest>
