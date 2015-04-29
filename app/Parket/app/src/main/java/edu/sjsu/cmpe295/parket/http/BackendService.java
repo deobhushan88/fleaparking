@@ -5,6 +5,8 @@ import edu.sjsu.cmpe295.parket.model.request.CheckInOutRequest;
 import edu.sjsu.cmpe295.parket.model.request.IdTokenParameterRequest;
 import edu.sjsu.cmpe295.parket.model.response.BookParkingSpaceResponse;
 import edu.sjsu.cmpe295.parket.model.response.CheckInOutResponse;
+import edu.sjsu.cmpe295.parket.model.request.ParkingSpaceAvailabilityRequest;
+import edu.sjsu.cmpe295.parket.model.response.ParkingSpaceAvailabilityResponse;
 import edu.sjsu.cmpe295.parket.model.response.QueryParkingSpacesResponse;
 import edu.sjsu.cmpe295.parket.model.response.SearchResponse;
 import edu.sjsu.cmpe295.parket.model.request.SearchRequest;
@@ -23,11 +25,19 @@ public interface BackendService {
     @POST("/users/self/queryparkingspaces")
     void queryParkingSpaces(@Body IdTokenParameterRequest idTokenParameterRequest,
                             Callback<QueryParkingSpacesResponse> response);
+
     @POST("/users/self/bookings")
     void bookParkingSpace(@Body BookParkingSpaceRequest bookParkingSpaceRequest,
                           Callback<BookParkingSpaceResponse> response);
+
     @POST("/users/self/bookings/{bookingId}")
     void checkInOutParkingSpace(@Path("bookingId") String bookingId,
                                 @Body CheckInOutRequest checkInOutRequest,
                                 Callback<CheckInOutResponse> response);
+
+    @POST("/users/self/parkingspaces/{parkingSpaceId}")
+    void enableDisableParkingSpace(@Path("parkingSpaceId") String parkingSpaceId,
+                                   @Body ParkingSpaceAvailabilityRequest parkingSpaceAvailabilityRequest,
+                                   Callback<ParkingSpaceAvailabilityResponse> parkingSpaceAvailabilityResponse);
+
 }

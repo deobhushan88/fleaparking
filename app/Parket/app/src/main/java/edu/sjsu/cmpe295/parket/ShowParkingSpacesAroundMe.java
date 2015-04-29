@@ -161,12 +161,12 @@ public class ShowParkingSpacesAroundMe extends Activity implements OnMapReadyCal
                         break;
                     }
                     case 1: {
-                        Intent i = new Intent(getApplicationContext(), AddParkingSpace.class);
+                        Intent i = new Intent(getApplicationContext(), RentParkingSpace.class);
                         startActivity(i);
                         break;
                     }
                     case 2: {
-                        Intent i = new Intent(getApplicationContext(), AddParkingSpace.class);
+                        Intent i = new Intent(getApplicationContext(), Settings.class);
                         startActivity(i);
                         break;
                     }

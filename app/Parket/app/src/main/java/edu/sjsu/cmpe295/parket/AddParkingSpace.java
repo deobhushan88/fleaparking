@@ -19,7 +19,9 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
+import android.widget.Toolbar;
 
 import java.io.ByteArrayOutputStream;
 
@@ -41,6 +43,30 @@ public class AddParkingSpace extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_parking_space);
+
+        //Adding a Toolbar
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_addParkingSpace);
+        toolbar.setTitle(getResources().getString(R.string.title_activity_add_parking_space));
+        toolbar.setTitleTextColor(getResources().getColor(R.color.white));
+        toolbar.setNavigationIcon(R.drawable.ic_back);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(getApplicationContext(), RentParkingSpace.class);
+                startActivity(i);
+
+            }
+        });
+        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                Intent i = new Intent(getApplicationContext(), RentParkingSpace.class);
+                startActivity(i);
+                return true;
+            }
+        });
+
+
         spinner = (Spinner) findViewById(R.id.state);
         // Create an ArrayAdapter using the string array and a default spinner layout
         ArrayAdapter<CharSequence> adapter;
@@ -50,9 +76,8 @@ public class AddParkingSpace extends Activity {
         adapter.setDropDownViewResource(R.layout.spinner_layout);
         // Apply the adapter to the spinner
         spinner.setAdapter(adapter);
-        addPhotosButton = (Button) findViewById(R.id.addPhotos); // Replace with id of your button_bg_accent.
+        addPhotosButton = (Button) findViewById(R.id.addPhotos);
         addPhotosButton.setOnClickListener(new View.OnClickListener() {
-
 
             @Override
             public void onClick(View v) {
@@ -61,7 +86,6 @@ public class AddParkingSpace extends Activity {
 
             }
         });
-
 
         Button verifyAddress = (Button) findViewById(R.id.verifyAddress);
         verifyAddress.setOnClickListener(new View.OnClickListener() {
@@ -95,6 +119,32 @@ public class AddParkingSpace extends Activity {
 
     }
 
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == RESULT_LOAD_IMAGE && resultCode == RESULT_OK && null != data) {
+            Uri selectedImage = data.getData();
+            String[] filePathColumn = {MediaStore.Images.Media.DATA};
+            Cursor cursor = getContentResolver().query(selectedImage, filePathColumn, null, null, null);
+            cursor.moveToFirst();
+            int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+            String picturePath = cursor.getString(columnIndex);
+            cursor.close();
+            ImageView imageView = (ImageView) findViewById(R.id.imgView);
+            imageView.setImageBitmap(BitmapFactory.decodeFile(picturePath));
+            Button btn = (Button) findViewById(R.id.addPhotos);
+            btn.setText("Change Photo");
+            //storing image in thumbnail
+            thumbnail = (BitmapFactory.decodeFile(picturePath));
+            //converting image into Bitmap
+            Bitmap bm = BitmapFactory.decodeFile(picturePath);
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            bm.compress(Bitmap.CompressFormat.JPEG, 100, baos); //bm is the bitmap object
+            byte[] byteArrayImage = baos.toByteArray();
+            //converting image into Base64
+            String encodedImage = Base64.encodeToString(byteArrayImage, Base64.DEFAULT);
+            Log.d("Encoded Image", encodedImage);
+        }
+    }
 
     private void loadSavedPreferences() {
         SharedPreferences sharedPreferences = PreferenceManager
@@ -120,42 +170,20 @@ public class AddParkingSpace extends Activity {
     }
 
     public void saveData() {
-        savePreferences(parkingSpaceLabel_GET, parkingSpaceLabel.getText().toString());
-        savePreferences(parkingSpaceLabel_GET, parkingSpaceLabel.getText().toString());
-        savePreferences(address1_GET, address1.getText().toString());
-        savePreferences(address2_GET, address2.getText().toString());
-        savePreferences(city_GET, city.getText().toString());
-        savePreferences(zipcode_GET, zipcode.getText().toString());
+        try {
+            savePreferences(parkingSpaceLabel_GET, parkingSpaceLabel.getText().toString());
+            savePreferences(address1_GET, address1.getText().toString());
+            savePreferences(address2_GET, address2.getText().toString());
+            savePreferences(city_GET, city.getText().toString());
+            savePreferences(zipcode_GET, zipcode.getText().toString());
+        } catch(Exception e) {
+
+        }
     }
 
     @Override
     public void onBackPressed() {
         saveData();
         super.onBackPressed();
-    }
-
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == RESULT_LOAD_IMAGE && resultCode == RESULT_OK && null != data) {
-            Uri selectedImage = data.getData();
-            String[] filePathColumn = {MediaStore.Images.Media.DATA};
-            Cursor cursor = getContentResolver().query(selectedImage, filePathColumn, null, null, null);
-            cursor.moveToFirst();
-            int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-            String picturePath = cursor.getString(columnIndex);
-            cursor.close();
-            //storing image in thumbnail
-            thumbnail = (BitmapFactory.decodeFile(picturePath));
-            //converting image into Bitmap
-            Bitmap bm = BitmapFactory.decodeFile(picturePath);
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            bm.compress(Bitmap.CompressFormat.JPEG, 100, baos); //bm is the bitmap object
-            byte[] byteArrayImage = baos.toByteArray();
-            //converting image into Base64
-            String encodedImage = Base64.encodeToString(byteArrayImage, Base64.DEFAULT);
-            //Log.d("Encoded Image", encodedImage);
-
-        }
-
     }
 }
