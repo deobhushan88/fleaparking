@@ -137,6 +137,17 @@
             android:name=".Settings"
             android:label="@string/title_activity_settings" >
         </activity>
+        <activity
+            android:name=".EnableParkingSpace"
+            android:label="@string/title_activity_enable_parking_space"
+            android:parentActivityName=".RentParkingSpace"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>
