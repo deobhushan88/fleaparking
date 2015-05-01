@@ -156,6 +156,8 @@ public class ShowParkingSpacesAroundMe extends Activity implements OnMapReadyCal
                                     .requestLocationUpdates(mGoogleApiClient, mLocationRequest,
                                             (LocationListener) mMapFragment.getActivity());
                         }
+                        // Clear Markers
+                        cachedMap.clear();
                         // Update map
                         mMapFragment.getMapAsync((OnMapReadyCallback) mMapFragment.getActivity());
                         break;
@@ -331,6 +333,8 @@ public class ShowParkingSpacesAroundMe extends Activity implements OnMapReadyCal
                 advancedSearchResultMode = true;
                 // Stop Location Updates
                 LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
+                // Clear the Map of any markers
+                cachedMap.clear();
                 // Store the data given by AdvancedSearch
                 advancedSearchRequest.setIdToken(authUtil.getIdToken());
                 advancedSearchRequest.setAction("searchAroundAddress");
@@ -441,6 +445,10 @@ public class ShowParkingSpacesAroundMe extends Activity implements OnMapReadyCal
                             if (marker.getTitle().equals("bookingMarker")) {
                                 return getLayoutInflater().inflate(R.layout.booking_map_marker, null);
                             }
+                            // Check if its the advanced search location marker
+                            if (marker.getTitle().equals("advancedSearchLocation")) {
+                                return getLayoutInflater().inflate(R.layout.advanced_search_marker, null);
+                            }
                             if (marker.getTitle().equals(String.valueOf(i))) {
                                 ParkingSpace parkingSpace = searchResponse
                                         .getParkingSpaces()
@@ -473,6 +481,16 @@ public class ShowParkingSpacesAroundMe extends Activity implements OnMapReadyCal
                     @Override
                     public void onInfoWindowClick(Marker marker) {
                         ParkingSpace parkingSpace = null;
+                        // First check if its a booking marker
+                        if (marker.getTitle().equals("bookingMarker")) {
+                            // do nothing
+                            return;
+                        }
+                        // Check if its the advanced search location marker
+                        if (marker.getTitle().equals("advancedSearchLocation")) {
+                            // do nothing
+                            return;
+                        }
                         // Identify the marker clicked using its title
                         for (int i = 0; i < searchResponse.getCount(); i++) {
                             if (marker.getTitle().equals(String.valueOf(i))) {

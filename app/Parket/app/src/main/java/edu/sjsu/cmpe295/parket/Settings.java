@@ -70,6 +70,7 @@ public class Settings extends Activity {
             public void onClick(View v) {
                 // Sign out, go back to LoginActivity
                 // TODO: Use Google API Client to sign out
+                // TODO: Add the logout endpoint on backend side, and on the android side: reset the userToken AND delete the JobService (idTokenService))
                 Intent i = new Intent(getApplicationContext(), LoginActivity.class);
                 startActivity(i);
             }

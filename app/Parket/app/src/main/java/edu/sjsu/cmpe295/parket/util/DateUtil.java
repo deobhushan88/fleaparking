@@ -41,10 +41,11 @@ public class DateUtil {
     public String nextHour() {
         Calendar c = Calendar.getInstance();
         c.setTime(currentTime);
-        c.set(Calendar.HOUR_OF_DAY, c.get(Calendar.HOUR_OF_DAY + 1));
+        c.set(Calendar.HOUR_OF_DAY, c.get(Calendar.HOUR_OF_DAY) + 1);
         c.set(Calendar.MINUTE, 0);
         c.set(Calendar.SECOND, 0);
         c.set(Calendar.MILLISECOND, 0);
+        Log.d(TAG, df.format(c.getTime()));
         return df.format(c.getTime());
     }
 
@@ -54,10 +55,11 @@ public class DateUtil {
     public String nextHourPlusOne() {
         Calendar c = Calendar.getInstance();
         c.setTime(currentTime);
-        c.set(Calendar.HOUR_OF_DAY, c.get(Calendar.HOUR_OF_DAY + 2));
+        c.set(Calendar.HOUR_OF_DAY, c.get(Calendar.HOUR_OF_DAY) + 2);
         c.set(Calendar.MINUTE, 0);
         c.set(Calendar.SECOND, 0);
         c.set(Calendar.MILLISECOND, 0);
+        Log.d(TAG, df.format(c.getTime()));
         return df.format(c.getTime());
     }
 

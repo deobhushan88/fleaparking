@@ -20,6 +20,7 @@
     <string name="text_check_in">Tap to Check In</string>
     <string name="text_check_out">Tap to Check Out</string>
     <string name="text_tap_to_navigate">Navigate to Parking Space</string>
+    <string name="text_advanced_search_location">Results Around This Location</string>
 
 
     <!-- LoginActivity -->

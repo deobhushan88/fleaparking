@@ -1,11 +1,10 @@
 package edu.sjsu.cmpe295.parket;
 
 
+import android.app.Activity;
 import android.app.Fragment;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,10 +16,21 @@ import android.widget.Button;
  */
 public class VerifyAddressButton extends Fragment {
 
+    VerifyListener callback;
+
     public VerifyAddressButton() {
         // Required empty public constructor
     }
 
+    public interface VerifyListener {
+        public void onVerified();
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        callback = (VerifyListener) activity;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -35,7 +45,6 @@ public class VerifyAddressButton extends Fragment {
             @Override
             public void onClick(View v)
             {
-                Log.d("cancelButton", "onClick");
                 Intent i = new Intent(getActivity().getApplicationContext(), AddParkingSpace.class);
                 i.putExtra("FROM_ACTIVITY","VerifyAddressButton");
                 startActivity(i);
@@ -47,10 +56,7 @@ public class VerifyAddressButton extends Fragment {
             @Override
             public void onClick(View v)
             {
-                Log.d("VerifyAddressBtn", "onClick");
-                Intent i = new Intent(getActivity().getApplicationContext(), RentParkingSpace.class);
-                i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                startActivity(i);
+                callback.onVerified();
             }
         });
         return view;

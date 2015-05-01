@@ -1,8 +1,10 @@
 package edu.sjsu.cmpe295.parket.http;
 
+import edu.sjsu.cmpe295.parket.model.request.AddParkingSpaceRequest;
 import edu.sjsu.cmpe295.parket.model.request.BookParkingSpaceRequest;
 import edu.sjsu.cmpe295.parket.model.request.CheckInOutRequest;
 import edu.sjsu.cmpe295.parket.model.request.IdTokenParameterRequest;
+import edu.sjsu.cmpe295.parket.model.response.AddParkingSpaceResponse;
 import edu.sjsu.cmpe295.parket.model.response.BookParkingSpaceResponse;
 import edu.sjsu.cmpe295.parket.model.response.CheckInOutResponse;
 import edu.sjsu.cmpe295.parket.model.request.ParkingSpaceAvailabilityRequest;
@@ -39,5 +41,8 @@ public interface BackendService {
     void enableDisableParkingSpace(@Path("parkingSpaceId") String parkingSpaceId,
                                    @Body ParkingSpaceAvailabilityRequest parkingSpaceAvailabilityRequest,
                                    Callback<ParkingSpaceAvailabilityResponse> parkingSpaceAvailabilityResponse);
+
+    @POST("/users/self/parkingspaces")
+    void addParkingSpace(@Body AddParkingSpaceRequest request, Callback<AddParkingSpaceResponse> response);
 
 }

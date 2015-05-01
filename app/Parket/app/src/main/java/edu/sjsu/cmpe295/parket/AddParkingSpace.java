@@ -10,8 +10,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
-import android.util.Base64;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -36,6 +34,8 @@ public class AddParkingSpace extends Activity {
     private static int RESULT_LOAD_IMAGE = 1;
     private static final int PICK_FROM_GALLERY = 2;
     Bitmap thumbnail = null;
+    String encodedImage = "";
+    byte[] byteArrayImage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,9 +105,21 @@ public class AddParkingSpace extends Activity {
                 city_GET = city.getText().toString();
                 state_GET = state.getSelectedItem().toString();
                 zipcode_GET = zipcode.getText().toString();
+                if (zipcode_GET == "") zipcode_GET = "00000";
                 dataPacket = address1_GET + " " + address2_GET + " " + city_GET + ", " + state_GET +  " " + zipcode_GET;
                 Bundle bundle = new Bundle();
                 bundle.putString("address", dataPacket);
+                bundle.putString("parkingSpaceLabel", parkingSpaceLabel_GET);
+                bundle.putString("parkingSpaceDescription", description_GET);
+                bundle.putString("addrLine1", address1_GET);
+                bundle.putString("addrLine2", address2_GET);
+                bundle.putString("city", city_GET);
+                bundle.putString("state", state_GET);
+                bundle.putString("country", "USA");
+                bundle.putInt("zip", Integer.parseInt(zipcode_GET));
+                // TODO: Add a UI switch to select this disabledParkingFlag and use its value
+                bundle.putBoolean("disabledParkingFlag", false);
+                bundle.putByteArray("parkingSpacePhoto", byteArrayImage);
                 loadSavedPreferences();
                 Intent i = new Intent(getBaseContext(), ConfirmAddress.class);
                 i.putExtras(bundle);
@@ -137,10 +149,9 @@ public class AddParkingSpace extends Activity {
             Bitmap bm = BitmapFactory.decodeFile(picturePath);
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             bm.compress(Bitmap.CompressFormat.JPEG, 100, baos); //bm is the bitmap object
-            byte[] byteArrayImage = baos.toByteArray();
+            byteArrayImage = baos.toByteArray();
             //converting image into Base64
-            String encodedImage = Base64.encodeToString(byteArrayImage, Base64.DEFAULT);
-            Log.d("Encoded Image", encodedImage);
+            // encodedImage = Base64.encodeToString(byteArrayImage, Base64.DEFAULT);
         }
     }
 

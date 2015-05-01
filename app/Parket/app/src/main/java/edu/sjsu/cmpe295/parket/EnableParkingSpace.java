@@ -6,13 +6,9 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.TimePickerDialog;
 import android.content.Intent;
-import android.location.Address;
-import android.location.Geocoder;
 import android.os.Bundle;
 import android.text.format.DateFormat;
-import android.util.Log;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -21,16 +17,11 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 import android.widget.Toolbar;
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
 
 import edu.sjsu.cmpe295.parket.http.RestClient;
-import edu.sjsu.cmpe295.parket.model.UserParkingSpace;
 import edu.sjsu.cmpe295.parket.model.request.ParkingSpaceAvailabilityRequest;
 import edu.sjsu.cmpe295.parket.model.response.ParkingSpaceAvailabilityResponse;
-import edu.sjsu.cmpe295.parket.model.response.QueryParkingSpacesResponse;
 import edu.sjsu.cmpe295.parket.util.AuthUtil;
 import edu.sjsu.cmpe295.parket.util.DateUtil;
 import retrofit.Callback;
@@ -134,8 +125,19 @@ public class EnableParkingSpace extends Activity {
                     dateUtil = new DateUtil();
                     Bundle bundle = getIntent().getExtras();
                     String parkingSpaceId = bundle.getString("parkingSpaceId");
-                    String startDateTime = dateUtil.pickerTimeToMachineString(Integer.parseInt(startTimeHour), Integer.parseInt(startTimeMinute));
-                    String endDateTime = dateUtil.pickerTimeToMachineString(Integer.parseInt(endTimeHour), Integer.parseInt(endTimeMinute));
+                    String[] splitDate = dateButtonText.split("-");
+                    String startDateTime = dateButtonText +
+                            "T" +
+                            dateUtil.pickerTimeToMachineString(Integer.parseInt(startTimeHour),
+                                    Integer.parseInt(startTimeMinute)) +
+                            ":00" +
+                            dateUtil.getCurrentTimezoneOffset();
+                    String endDateTime = dateButtonText +
+                            "T" +
+                            dateUtil.pickerTimeToMachineString(Integer.parseInt(endTimeHour),
+                                    Integer.parseInt(endTimeMinute)) +
+                            ":00" +
+                            dateUtil.getCurrentTimezoneOffset();
                     parkingSpaceAvailabilityRequest = new ParkingSpaceAvailabilityRequest(authUtil.getIdToken(),
                             "parkingSpaceEnable",true,startDateTime,endDateTime,Double.parseDouble(rateText));
                     RestClient.getInstance().enableDisableParkingSpace(parkingSpaceId, parkingSpaceAvailabilityRequest, new Callback<ParkingSpaceAvailabilityResponse>() {
