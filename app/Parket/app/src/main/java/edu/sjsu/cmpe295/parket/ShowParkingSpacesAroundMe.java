@@ -86,6 +86,7 @@ public class ShowParkingSpacesAroundMe extends Activity implements OnMapReadyCal
 
     // Intent Request code
     private static final int REQ_ADVANCED_SEARCH = 1;
+    private static final int REQ_ZXING_QR_CODE_SCANNER = 49374;
 
     /**
      * Flag to indicate whether this activity is currently displaying results from an
@@ -264,61 +265,69 @@ public class ShowParkingSpacesAroundMe extends Activity implements OnMapReadyCal
         super.onActivityResult(requestCode, resultCode, data);
 
         // Check if it is QR Code Scanner result
-        IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
-        if (scanResult != null) {
-            // Get the scanned code
-            String scannedQrCode = scanResult.getContents();
-            // Compare it with the correct code for this booking's associated parking space
-            final BookParkingSpaceResponse res = dbHandler.getBookingParkingSpaceResponse();
-            boolean isCorrectParkingSpace = scannedQrCode.equals(res.getQrCode());
-            Log.d(TAG, "scannedQrCode : " + scannedQrCode + ", booking qrCode: " + res.getQrCode());
-            // Check in if code matches
-            // TODO: Need to persist the check in and check out fragment, using some flag, or based on database entry
-            if (isCorrectParkingSpace) {
-                CheckInOutRequest req = new CheckInOutRequest(authUtil.getIdToken(), "checkIn");
-                RestClient.getInstance().checkInOutParkingSpace(res.getBookingId(), req,
-                        new Callback<CheckInOutResponse>() {
-                            @Override
-                            public void success(CheckInOutResponse checkInOutResponse, Response response) {
-                                // Check in successful, now replace with check out fragment
-                                CheckOutFragment checkOutFragment = new CheckOutFragment();
-                                FragmentManager fragmentManager = getFragmentManager();
-                                fragmentManager.beginTransaction()
-                                        .replace(R.id.overlay_checkinout_container, checkOutFragment, TAG_CHECKOUT)
-                                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                                        .commit();
-                                Toast.makeText(getApplicationContext(),
-                                        "Check In successful!", Toast.LENGTH_LONG).show();
-                                // Stop Periodic location updates and and focus on the booked parking space
-                                // so that user can navigate to it
-                                stopLocationUpdates();
-                                cachedMap.clear();
-                                CameraUpdate center = CameraUpdateFactory
-                                        .newLatLng(new LatLng(res.getParkingSpaceLat(),
-                                                res.getParkingSpaceLong()));
-                                cachedMap.moveCamera(center);
-                                CameraUpdate zoom = CameraUpdateFactory.zoomTo(18);
-                                cachedMap.animateCamera(zoom);
-                                MarkerOptions m = new MarkerOptions()
-                                        .position(new LatLng(res.getParkingSpaceLat(),
-                                                res.getParkingSpaceLong()))
-                                        .flat(false)
-                                        .title("bookingMarker")
-                                        .icon(BitmapDescriptorFactory
-                                                .fromResource(R.drawable.ic_map_pin_accent));
-                                cachedMap.addMarker(m);
-                            }
+        if (requestCode == REQ_ZXING_QR_CODE_SCANNER) {
+            IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+            if (resultCode == RESULT_OK) {
+                if (scanResult != null) {
+                    // Get the scanned code
+                    String scannedQrCode = scanResult.getContents();
+                    // Compare it with the correct code for this booking's associated parking space
+                    final BookParkingSpaceResponse res = dbHandler.getBookingParkingSpaceResponse();
+                    boolean isCorrectParkingSpace = scannedQrCode.equals(res.getQrCode());
+                    Log.d(TAG, "scannedQrCode : " + scannedQrCode + ", booking qrCode: " + res.getQrCode());
+                    // Check in if code matches
+                    // TODO: Need to persist the check in and check out fragment, using some flag, or based on database entry
+                    if (isCorrectParkingSpace) {
+                        CheckInOutRequest req = new CheckInOutRequest(authUtil.getIdToken(), "checkIn");
+                        RestClient.getInstance().checkInOutParkingSpace(res.getBookingId(), req,
+                                new Callback<CheckInOutResponse>() {
+                                    @Override
+                                    public void success(CheckInOutResponse checkInOutResponse, Response response) {
+                                        // Check in successful, now replace with check out fragment
+                                        CheckOutFragment checkOutFragment = new CheckOutFragment();
+                                        FragmentManager fragmentManager = getFragmentManager();
+                                        fragmentManager.beginTransaction()
+                                                .replace(R.id.overlay_checkinout_container, checkOutFragment, TAG_CHECKOUT)
+                                                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                                                .commit();
+                                        Toast.makeText(getApplicationContext(),
+                                                "Check In successful!", Toast.LENGTH_LONG).show();
+                                        // Stop Periodic location updates and and focus on the booked parking space
+                                        // so that user can navigate to it
+                                        stopLocationUpdates();
+                                        cachedMap.clear();
+                                        CameraUpdate center = CameraUpdateFactory
+                                                .newLatLng(new LatLng(res.getParkingSpaceLat(),
+                                                        res.getParkingSpaceLong()));
+                                        cachedMap.moveCamera(center);
+                                        CameraUpdate zoom = CameraUpdateFactory.zoomTo(18);
+                                        cachedMap.animateCamera(zoom);
+                                        MarkerOptions m = new MarkerOptions()
+                                                .position(new LatLng(res.getParkingSpaceLat(),
+                                                        res.getParkingSpaceLong()))
+                                                .flat(false)
+                                                .title("bookingMarker")
+                                                .icon(BitmapDescriptorFactory
+                                                        .fromResource(R.drawable.ic_map_pin_accent));
+                                        cachedMap.addMarker(m);
+                                    }
 
-                            @Override
-                            public void failure(RetrofitError error) {
+                                    @Override
+                                    public void failure(RetrofitError error) {
 
-                            }
-                        });
+                                    }
+                                });
+                    }
+                    else {
+                        // Wrong parking space
+                        Toast.makeText(getApplicationContext(),
+                                "You are trying to check in to the wrong parking space", Toast.LENGTH_LONG).show();
+                    }
+                }
             }
-            else {
-                // Wrong parking space
-                Toast.makeText(getApplicationContext(),
-                        "You are trying to check in to the wrong parking space", Toast.LENGTH_LONG).show();
+            else if (resultCode == RESULT_CANCELED) {
+                // TODO
+                // do nothing at the moment
             }
         }
 
@@ -488,6 +497,11 @@ public class ShowParkingSpacesAroundMe extends Activity implements OnMapReadyCal
                         }
                         // Check if its the advanced search location marker
                         if (marker.getTitle().equals("advancedSearchLocation")) {
+                            // do nothing
+                            return;
+                        }
+                        // Check if the activity is in checkin/checkout mode
+                        if (checkInCheckOutMode) {
                             // do nothing
                             return;
                         }

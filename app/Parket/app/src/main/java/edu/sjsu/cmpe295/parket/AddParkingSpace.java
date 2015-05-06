@@ -6,10 +6,14 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -17,12 +21,19 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.Toast;
 import android.widget.Toolbar;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationServices;
+
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 
 
-public class AddParkingSpace extends Activity {
+public class AddParkingSpace extends Activity implements GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener {
 
     Spinner spinner, state;
     Button addPhotosButton;
@@ -36,6 +47,12 @@ public class AddParkingSpace extends Activity {
     Bitmap thumbnail = null;
     String encodedImage = "";
     byte[] byteArrayImage;
+
+    // Location Services
+    GoogleApiClient mGoogleApiClient;
+    Location mUserLocation;
+
+    private final static String TAG = "AddParkingSpace";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,14 +72,33 @@ public class AddParkingSpace extends Activity {
 
             }
         });
+        toolbar.inflateMenu(R.menu.toolbar_add_parking_space);
         toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                Intent i = new Intent(getApplicationContext(), RentParkingSpace.class);
-                startActivity(i);
+                // First Check if the Google API client is connected
+                if (mGoogleApiClient.isConnected()) {
+                    // Get user's current location
+                    mUserLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+                    if (mUserLocation != null) {
+                        updateUIWithAddress();
+                    }
+                }
+                else {
+                    Toast.makeText(getApplicationContext(),
+                            "Cannot get your current location, Try again later", Toast.LENGTH_LONG).show();
+                }
                 return true;
             }
         });
+
+        // Location Services
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(LocationServices.API)
+                .build();
+        mGoogleApiClient.connect();
 
 
         spinner = (Spinner) findViewById(R.id.state);
@@ -105,7 +141,7 @@ public class AddParkingSpace extends Activity {
                 city_GET = city.getText().toString();
                 state_GET = state.getSelectedItem().toString();
                 zipcode_GET = zipcode.getText().toString();
-                if (zipcode_GET == "") zipcode_GET = "00000";
+                if (zipcode_GET.equals("")) zipcode_GET = "00000";
                 dataPacket = address1_GET + " " + address2_GET + " " + city_GET + ", " + state_GET +  " " + zipcode_GET;
                 Bundle bundle = new Bundle();
                 bundle.putString("address", dataPacket);
@@ -194,5 +230,56 @@ public class AddParkingSpace extends Activity {
     public void onBackPressed() {
         saveData();
         super.onBackPressed();
+    }
+
+    // Location services callbacks
+    @Override
+    public void onConnected(Bundle bundle) {
+        mUserLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+    }
+
+    public void updateUIWithAddress() {
+        // Update the UI
+        Geocoder g = new Geocoder(this);
+        try {
+            Address a = (g.getFromLocation(mUserLocation.getLatitude()
+                    , mUserLocation.getLongitude(), 1)).get(0);
+            int i = a.getMaxAddressLineIndex();
+            if (i == 0) {
+                ((EditText) findViewById(R.id.address1)).setText(a.getAddressLine(0));
+            }
+            if (i > 0) {
+                ((EditText) findViewById(R.id.address1)).setText(a.getAddressLine(0));
+                ((EditText) findViewById(R.id.address2)).setText(a.getAddressLine(1));
+            }
+            ((EditText) findViewById(R.id.city)).setText(a.getLocality());
+            String[] stateStrings = getResources().getStringArray(R.array.states);
+            i = 0;
+            for (String s : stateStrings) {
+                if (s.equals(a.getAdminArea())) {
+                    // found the state
+                    ((Spinner) findViewById(R.id.state)).setSelection(i);
+                    break;
+                }
+                i++;
+            }
+            // TODO: Temporary, improve later
+            // i == 49 means search has gone beyond the index, i.e. state was not found
+            if (i==49) ((Spinner) findViewById(R.id.state)).setSelection(4); // CA
+            ((EditText) findViewById(R.id.zipcode)).setText(a.getPostalCode());
+        } catch (IOException e) {
+            Log.e(TAG, "Error getting Address from latitude and longitude", e);
+        }
+    }
+
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+
     }
 }
