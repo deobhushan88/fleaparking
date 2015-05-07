@@ -23,6 +23,3 @@ Since we have small teams working independently on each component, we can do wit
 **Wiki**  
 https://github.com/deobhushan88/fleaparking/wiki
 
-**Sprints**<br/>
-*Sprint 1* (ends Feb 28) is a long one as we get set up. Following sprints will be shorter and we'll hope to gain more velocity.
-
