@@ -999,6 +999,7 @@ class BaseRequest(object):
     __slots__ = ('environ')
 
     #: Maximum size of memory buffer for :attr:`body` in bytes.
+    # Parket Changes to allow for exchange of base64 encoded images of large size
     MEMFILE_MAX = 2048000
 
     def __init__(self, environ=None):
